@@ -6,6 +6,12 @@
     touch-action: manipulation;
     -ms-touch-action: manipulation;
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
+    outline: none;
 }
 
 html, body, #app {
@@ -16,7 +22,6 @@ html, body, #app {
     height: 100%;
     touch-action: manipulation;
     -ms-touch-action: manipulation;
-    user-select: none;
 }
 
 #app {

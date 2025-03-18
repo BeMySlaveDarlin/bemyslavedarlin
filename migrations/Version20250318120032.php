@@ -15,9 +15,11 @@ final class Version20250318120032 extends AbstractMigration
             "
             CREATE TABLE players (
                 id SERIAL PRIMARY KEY,
+                token TEXT NOT NULL,
                 nickname VARCHAR(255),
                 grade VARCHAR(128) NOT NULL DEFAULT 'Junior',
                 money BIGINT NOT NULL DEFAULT 0,
+                skills JSONB DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );"

@@ -22,3 +22,8 @@ get-rating:
     path: /api/rating
     controller: App\Component\Common\Controller\ApiController::getRatingAction
     methods: [GET]
+
+set-player:
+    path: /api/player
+    controller: App\Component\Common\Controller\ApiController::setPlayerAction
+    methods: [POST]

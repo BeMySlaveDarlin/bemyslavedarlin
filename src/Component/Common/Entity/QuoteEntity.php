@@ -30,11 +30,14 @@ class QuoteEntity implements JsonSerializable
     public string $text;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public \DateTimeImmutable $createdAt;
+    public DateTimeImmutable $createdAt;
 
     public function jsonSerialize(): array
     {
-        return ['id' => $this->id, 'text' => $this->text];
+        return [
+            'id' => $this->id,
+            'text' => $this->text,
+        ];
     }
 
     #[PrePersist]

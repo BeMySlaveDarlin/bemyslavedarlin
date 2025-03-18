@@ -1,8 +1,8 @@
 <script>
-import {mapActions} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import resetImage from '@/assets/images/ui/reset.webp'
-import resetClickImage from '@/assets/images/ui/reset-click.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import resetImage from "@/assets/images/ui/buttons/reset.webp"
+import resetClickImage from "@/assets/images/ui/buttons/reset-click.webp"
 
 export default {
   data() {
@@ -11,13 +11,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useGlobalStore, ['reset']),
+    ...mapActions(useGlobalStore, ['resetState']),
     handleClick() {
       this.currentImage = resetClickImage
       setTimeout(() => {
         this.currentImage = resetImage
       }, 500)
-      this.reset()
+      this.resetState()
     }
   }
 }

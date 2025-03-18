@@ -1,5 +1,5 @@
 <script>
-import coinGif from '@/assets/images/items/coin.gif'
+import coinGif from "@/assets/images/items/coin.gif"
 
 export default {
   props: {
@@ -35,20 +35,20 @@ export default {
 
 <style scoped>
 .coin-container {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   display: inline;
   overflow: hidden;
   position: absolute;
   right: -200px;
   bottom: 300px;
   animation: scroll-left 20s linear forwards;
-  user-select: none;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
   .coin-container {
     animation-duration: 15s;
+    bottom: 450px;
   }
 }
 
@@ -56,13 +56,6 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  user-select: none;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .coin-container {
-    bottom: 400px;
-  }
 }
 
 @keyframes scroll-left {

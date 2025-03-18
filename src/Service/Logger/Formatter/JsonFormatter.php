@@ -17,6 +17,15 @@ class JsonFormatter implements FormatterInterface
     ) {
     }
 
+    public function formatBatch(array $records): array
+    {
+        foreach ($records as $key => $record) {
+            $records[$key] = $this->format($record);
+        }
+
+        return $records;
+    }
+
     public function format(LogRecord $record): string
     {
         $params = $record->toArray();
@@ -26,21 +35,12 @@ class JsonFormatter implements FormatterInterface
         $context = $this->formatContext($params['context']);
         foreach ($context as $key => $value) {
             if (is_scalar($value)) {
-                $message = str_replace("{{$key}}", (string) $value, $message);
+                $message = str_replace("{{$key}}", (string)$value, $message);
             }
         }
         $contextStr = json_encode($context, JSON_THROW_ON_ERROR);
 
         return "$timestamp $channel $message $contextStr" . PHP_EOL;
-    }
-
-    public function formatBatch(array $records): array
-    {
-        foreach ($records as $key => $record) {
-            $records[$key] = $this->format($record);
-        }
-
-        return $records;
     }
 
     public function formatContext(array $context): array

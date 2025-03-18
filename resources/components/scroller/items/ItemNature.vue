@@ -1,7 +1,4 @@
 <script>
-import {mapState} from "pinia"
-import {useGlobalStore} from "@/store/global.js"
-
 export default {
   props: {
     itemId: {
@@ -21,9 +18,6 @@ export default {
     return {
       randomMargin: `-${Math.floor(Math.random() * 10)}px`,
     }
-  },
-  computed: {
-    ...mapState(useGlobalStore, ['isIntersectingMoney'])
   },
   methods: {
     getImagePath(itemType, imageNumber) {
@@ -63,13 +57,6 @@ export default {
   position: absolute;
   right: -200px;
   animation: scroll-left 20s linear forwards;
-  user-select: none;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .object-container {
-    animation-duration: 15s;
-  }
 }
 
 .object-container.top {
@@ -98,7 +85,6 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  user-select: none;
 }
 
 .scroller-item.bottom {
@@ -112,6 +98,9 @@ export default {
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
+  .object-container {
+    animation-duration: 15s;
+  }
   .object-container.top {
     width: 260px;
     height: 200px;

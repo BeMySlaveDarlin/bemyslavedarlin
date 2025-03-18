@@ -5,9 +5,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-###> phpca reports ###
-/public/phpca/
-###< phpca reports ###
 
 ###> docker ###
 /docker-compose.override.yaml

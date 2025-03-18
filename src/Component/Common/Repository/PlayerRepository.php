@@ -22,8 +22,8 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function findTopTen(): array
     {
-        return $this->createQueryBuilder('p')
-            ->orderBy()
+        return $this
+            ->createQueryBuilder('p')
             ->orderBy('p.money', 'DESC')
             ->setMaxResults(10)
             ->getQuery()

@@ -1,5 +1,5 @@
 <script>
-import bubble from '@/assets/images/items/skills/bubble.webp'
+import bubble from "@/assets/images/items/skills/bubble.webp"
 
 export default {
   props: {
@@ -52,7 +52,6 @@ export default {
   right: -200px;
   bottom: 300px;
   animation: scroll-left 20s linear forwards, scale 3s ease-in-out infinite;
-  user-select: none;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -70,7 +69,6 @@ export default {
   position: relative;
   top: 20%;
   left: 20%;
-  user-select: none;
 }
 
 @keyframes scroll-left {

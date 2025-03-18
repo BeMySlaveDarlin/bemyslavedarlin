@@ -1,6 +1,5 @@
 <script>
-import {mapState} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
+import {useGlobalStore} from "@/store/index"
 import ItemPoop from "@/components/scroller/items/ItemPoop.vue"
 
 export default {
@@ -22,7 +21,9 @@ export default {
     this.createRandomScrollInterval()
   },
   computed: {
-    ...mapState(useGlobalStore, ['isIntersectingPoop'])
+    conditions() {
+      return useGlobalStore().conditions
+    }
   },
   methods: {
     createRandomScrollInterval() {
@@ -47,7 +48,7 @@ export default {
     }
   },
   watch: {
-    isIntersectingPoop(newValue) {
+    'conditions.isIntersectingPoop'(newValue) {
       if (newValue === true) {
         this.itemsList = []
       }

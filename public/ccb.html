@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CC-Bootstrapper — Claude Code Project Harness</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --cream: #faf7f2;
+    --paper: #f5f0e8;
+    --ink: #1a1a18;
+    --ink-light: #4a4a45;
+    --ink-faint: #8a8a82;
+    --rule: #c8c0b4;
+    --rule-light: #e0d8cc;
+    --accent-red: #c0392b;
+    --accent-blue: #2c5f8a;
+    --accent-gold: #b8860b;
+    --accent-green: #2d6a4f;
+    --accent-purple: #6c3483;
+    --accent-orange: #d35400;
+    --tag-bg: #eee8dc;
+    --shadow: rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 48px 60px;
+    background: var(--paper);
+    min-height: 100vh;
+    border-left: 1px solid var(--rule-light);
+    border-right: 1px solid var(--rule-light);
+    box-shadow: -20px 0 40px var(--shadow), 20px 0 40px var(--shadow);
+  }
+
+  /* ── Masthead ── */
+  .masthead {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 4px double var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .masthead-rule {
+    border: none;
+    border-top: 1px solid var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .masthead h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 52px;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .masthead h1 .dot { color: var(--accent-red); }
+
+  .masthead .subtitle {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-light);
+    letter-spacing: 0.5px;
+  }
+
+  .dateline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-faint);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+
+  /* ── Stats Banner ── */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 16px 0;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--accent-red);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+
+  /* ── Columns ── */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+
+  .col {
+    padding: 0 24px;
+  }
+
+  .col:first-child {
+    border-right: 1px solid var(--rule-light);
+    padding-left: 0;
+  }
+
+  .col:last-child {
+    padding-right: 0;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .section-icon {
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .section-head h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  .section-head .count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    background: var(--tag-bg);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .section-desc {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  /* ── Tree ── */
+  .tree {
+    list-style: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+
+  .tree li {
+    position: relative;
+    padding-left: 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .tree li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule-light);
+  }
+
+  .tree li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 14px;
+    height: 1px;
+    background: var(--rule-light);
+  }
+
+  .tree li:last-child::before {
+    bottom: calc(100% - 13px);
+  }
+
+  .fname {
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .fdesc {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ── Tags Grid ── */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--tag-bg);
+    border: 1px solid var(--rule-light);
+    color: var(--ink-light);
+    transition: all 0.15s;
+    cursor: default;
+    position: relative;
+  }
+
+  .tag:hover {
+    background: #fff;
+    border-color: var(--rule);
+    color: var(--ink);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+
+  .tag .tag-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  /* ── Color coding (monochrome) ── */
+  .c-red { color: var(--ink); }
+  .c-blue { color: var(--ink); }
+  .c-gold { color: var(--ink-light); }
+  .c-green { color: var(--ink); }
+  .c-purple { color: var(--ink); }
+  .c-orange { color: var(--ink-light); }
+
+  .bg-red { background-color: var(--ink); }
+  .bg-blue { background-color: var(--ink-light); }
+  .bg-gold { background-color: var(--ink-faint); }
+  .bg-green { background-color: var(--ink); }
+  .bg-purple { background-color: var(--ink-light); }
+  .bg-orange { background-color: var(--ink-faint); }
+
+  .icon-section {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+  }
+
+  /* ── Flow timeline ── */
+  .flow-timeline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 0 8px;
+    position: relative;
+  }
+
+  .flow-timeline::before {
+    content: '';
+    position: absolute;
+    top: 42px;
+    left: 28px;
+    right: 28px;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    text-align: center;
+  }
+
+  .flow-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--ink);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+  }
+
+  .flow-step.active .flow-num {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .flow-step-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .flow-step-desc {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-faint);
+    max-width: 120px;
+    line-height: 1.4;
+  }
+
+  /* ── Hooks table ── */
+  .hooks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .hooks-table th {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 2px solid var(--ink);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .hooks-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--rule-light);
+    vertical-align: top;
+  }
+
+  .hooks-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .hooks-table .hook-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .hooks-table .hook-event {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+  }
+
+  .hooks-table .hook-desc {
+    font-style: italic;
+    color: var(--ink-light);
+    font-size: 12px;
+  }
+
+  /* ── Full-width section ── */
+  .full-width {
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 32px;
+    padding-top: 12px;
+    border-top: 4px double var(--ink);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .footer a {
+    color: var(--ink-light);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── GitHub corner icon ── */
+  .github-corner {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 10;
+  }
+
+  .github-corner a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--rule-light);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .github-corner a:hover {
+    border-color: var(--ink-light);
+    background: #fff;
+    box-shadow: 0 2px 8px var(--shadow);
+    transform: scale(1.08);
+  }
+
+  .github-corner svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--ink);
+    transition: fill 0.2s;
+  }
+
+  .github-corner a:hover svg {
+    fill: var(--ink);
+  }
+
+  /* ── GitHub link (footer) ── */
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1px solid var(--rule-light);
+    border-radius: 3px;
+    background: var(--tag-bg);
+    color: var(--ink-faint);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+    transition: all 0.15s;
+  }
+
+  .github-link:hover {
+    background: #fff;
+    color: var(--ink);
+    border-color: var(--rule);
+    text-decoration: none;
+  }
+
+  .github-link svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* ── Terminal demo ── */
+  .demo {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .demo .section-head {
+    margin-bottom: 16px;
+  }
+
+  .terminal {
+    background: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .terminal-bar {
+    background: #323232;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .terminal-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+
+  .terminal-dot.red { background: #ff5f57; }
+  .terminal-dot.yellow { background: #febc2e; }
+  .terminal-dot.green { background: #28c840; }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: #888;
+    font-size: 11px;
+    margin-right: 44px;
+  }
+
+  .terminal-body {
+    padding: 18px 20px 22px;
+    height: 420px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+
+  .terminal-body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .terminal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .terminal-body::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+  }
+
+  .terminal-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  .term-line {
+    opacity: 0;
+    animation: termFadeIn 0.3s ease forwards;
+    white-space: pre-wrap;
+    margin-bottom: 2px;
+  }
+
+  .term-prompt {
+    color: #7ec699;
+  }
+
+  .term-cmd {
+    color: #e6e6e6;
+  }
+
+  .term-output {
+    color: #888;
+  }
+
+  .term-highlight {
+    color: #e6db74;
+  }
+
+  .term-agent {
+    color: #66d9ef;
+  }
+
+  .term-success {
+    color: #a6e22e;
+  }
+
+  .term-skill {
+    color: #ae81ff;
+  }
+
+  .term-red {
+    color: #f92672;
+  }
+
+  .term-dim {
+    color: #555;
+  }
+
+  .term-separator {
+    color: #444;
+    margin: 4px 0;
+  }
+
+  @keyframes termFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* stagger delays — set by inline style */
+
+  .term-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: #e6e6e6;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Replay button */
+  .term-replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding: 5px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    background: var(--tag-bg);
+    border: 1px solid var(--rule-light);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .term-replay:hover {
+    background: #fff;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+
+  /* ── Three column layout ── */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .three-col .col {
+    padding: 0 20px;
+    border-right: 1px solid var(--rule-light);
+  }
+
+  .three-col .col:first-child { padding-left: 0; }
+  .three-col .col:last-child { padding-right: 0; border-right: none; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    font-size: 11px;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule-light);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Ornament ── */
+  .ornament {
+    text-align: center;
+    font-size: 16px;
+    color: var(--rule);
+    margin: 8px 0 16px;
+    letter-spacing: 8px;
+  }
+
+  /* ── Root tree (big) ── */
+  .root-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 2;
+    padding: 16px 0;
+  }
+
+  .root-tree .dir {
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .root-tree .dir-icon {
+    font-size: 14px;
+  }
+
+  .root-tree .indent { padding-left: 24px; }
+  .root-tree .indent2 { padding-left: 48px; }
+
+  .root-tree .annotation {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-left: 12px;
+  }
+
+  .root-tree .connector {
+    color: var(--rule);
+    margin-right: 4px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .badge-commit { background: var(--ink); color: var(--paper); }
+  .badge-local { background: var(--tag-bg); color: var(--ink-light); border: 1px solid var(--rule); }
+  .badge-auto { background: var(--ink-light); color: var(--paper); }
+  .badge-iso { background: var(--tag-bg); color: var(--ink-light); border: 1px solid var(--rule); }
+
+  /* ── Clickable pipelines ── */
+  .pipeline-link {
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin: -1px -4px;
+  }
+
+  .pipeline-link:hover {
+    background: #fff;
+    box-shadow: 0 1px 4px var(--shadow);
+  }
+
+  .pipeline-link:hover .fname {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+  }
+
+  /* ── Modal / Overlay ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,24,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    overflow-y: auto;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-page {
+    background: var(--paper);
+    max-width: 680px;
+    width: 100%;
+    border: 1px solid var(--rule);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    padding: 36px 40px 32px;
+    position: relative;
+    animation: modalIn 0.25s ease-out;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--ink-faint);
+    background: none;
+    border: none;
+    font-family: inherit;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color 0.15s;
+  }
+
+  .modal-close:hover {
+    color: var(--ink);
+  }
+
+  .modal-masthead {
+    text-align: center;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+
+  .modal-masthead h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .modal-masthead .modal-sub {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-light);
+  }
+
+  .modal-body h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule-light);
+  }
+
+  .modal-body h3 .phase-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-red);
+    margin-right: 6px;
+  }
+
+  .modal-body p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+
+  .modal-body ul {
+    margin: 6px 0 12px 18px;
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.8;
+  }
+
+  .modal-body ul li::marker {
+    color: var(--rule);
+  }
+
+  .modal-trigger-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-bottom: 6px;
+  }
+
+  .modal-trigger-badge.code,
+  .modal-trigger-badge.review,
+  .modal-trigger-badge.docs,
+  .modal-trigger-badge.ops,
+  .modal-trigger-badge.release {
+    background: var(--tag-bg);
+    color: var(--ink-light);
+    border: 1px solid var(--rule-light);
+  }
+
+  .modal-footer {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px double var(--ink);
+    text-align: center;
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 800px) {
+    .page { padding: 20px 14px 32px; }
+    .masthead h1 { font-size: 30px; }
+    .masthead { padding-bottom: 14px; }
+
+    /* Dateline: stack vertically */
+    .dateline {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    /* Legend: wrap and left-align */
+    .legend {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 8px 16px;
+      padding: 8px 0;
+    }
+
+    /* Columns: single column */
+    .columns, .three-col { grid-template-columns: 1fr; }
+    .col, .three-col .col {
+      padding: 0 !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 16px !important;
+      margin-bottom: 16px;
+    }
+    .col:last-child, .three-col .col:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    /* Root tree: hide annotations on very small screens, show badges inline */
+    .root-tree { font-size: 13px; line-height: 1.8; }
+    .root-tree .annotation { display: none; }
+    .root-tree .indent { padding-left: 16px; }
+    .root-tree .indent2 { padding-left: 32px; }
+    .badge { font-size: 8px; padding: 1px 5px; }
+
+    /* Section heads */
+    .section-head h2 { font-size: 17px; }
+    .section-head .count { font-size: 10px; padding: 2px 6px; }
+
+    /* Flow timeline: vertical on mobile */
+    .flow-timeline {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding: 16px 0 8px 20px;
+    }
+
+    .flow-timeline::before {
+      top: 16px;
+      bottom: 8px;
+      left: 36px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+
+    .flow-step {
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      gap: 12px;
+      padding: 6px 0;
+    }
+
+    .flow-num {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .flow-step-desc {
+      max-width: none;
+    }
+
+    /* Hooks table: smaller text, no wrap */
+    .hooks-table { font-size: 12px; }
+    .hooks-table th { font-size: 10px; padding: 4px 6px; }
+    .hooks-table td { padding: 4px 6px; }
+    .hooks-table .hook-event { font-size: 10px; }
+    .hooks-table .hook-desc { font-size: 11px; }
+
+    /* Tree items: wrap descriptions */
+    .tree { font-size: 12px; }
+    .tree li {
+      flex-wrap: wrap;
+      gap: 2px 6px;
+    }
+
+    /* Modal: mobile-friendly */
+    .modal-page { padding: 24px 18px 20px; }
+    .modal-masthead h2 { font-size: 22px; }
+    .modal-body h3 { font-size: 14px; }
+    .modal-body p { font-size: 13px; }
+    .modal-body ul { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page" style="position: relative;">
+
+  <!-- ═══ GITHUB CORNER ═══ -->
+  <div class="github-corner">
+    <a href="https://github.com/BeMySlaveDarlin/cc-bootstrapper" target="_blank" rel="noopener" title="View on GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+  </div>
+
+  <!-- ═══ MASTHEAD ═══ -->
+  <header class="masthead">
+    <hr class="masthead-rule">
+    <h1>CC<span class="dot">-</span>Bootstrapper</h1>
+    <div class="subtitle">Turn any project into an AI-augmented engineering harness</div>
+  </header>
+
+  <div class="dateline">
+    <span>Works with any stack &bull; any language</span>
+    <span>Edition of March 2026</span>
+    <span>Claude Code &bull; cc-bootstrapper</span>
+  </div>
+
+  <!-- ═══ TAGLINE ═══ -->
+  <div style="text-align: center; padding: 14px 0; margin-bottom: 20px; border-bottom: 1px solid var(--rule); font-style: italic; color: var(--ink-light); font-size: 15px;">
+    Everything Claude needs to know about your project lives right here.
+  </div>
+
+  <!-- ═══ LEGEND ═══ -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot bg-green"></div> committed to git</div>
+    <div class="legend-item"><div class="legend-dot bg-orange"></div> gitignored / local</div>
+    <div class="legend-item"><div class="legend-dot bg-purple"></div> auto-invoked</div>
+    <div class="legend-item"><div class="legend-dot bg-blue"></div> isolated context</div>
+    <div class="legend-item"><div class="legend-dot bg-red"></div> router / entry point</div>
+  </div>
+
+  <!-- ═══ ROOT TREE ═══ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#167;</div>
+      <h2>Project Root</h2>
+    </div>
+    <div class="root-tree">
+      <div>
+        <span class="dir"><span class="dir-icon">&#128451;</span> your-project/</span>
+      </div>
+      <div class="indent">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="fname">CLAUDE.md</span>
+        <span class="badge badge-commit">commit</span>
+        <span class="annotation">team instructions &mdash; architecture, rules, commands</span>
+      </div>
+      <div class="indent">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="fname">CLAUDE.local.md</span>
+        <span class="badge badge-local">local</span>
+        <span class="annotation">personal overrides, gitignored</span>
+      </div>
+      <div class="indent">
+        <span class="connector">&#9492;&#9472;</span>
+        <span class="dir"><span class="dir-icon">&#9881;</span> .claude/</span>
+        <span class="annotation">the control center</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="fname">settings.json</span>
+        <span class="badge badge-commit">commit</span>
+        <span class="annotation">permissions + config</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="fname">settings.local.json</span>
+        <span class="badge badge-local">local</span>
+        <span class="annotation">personal permissions</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir c-blue">agents/</span>
+        <span class="badge badge-iso">isolated</span>
+        <span class="annotation">subagent personas</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir c-purple">skills/</span>
+        <span class="badge badge-auto">auto</span>
+        <span class="annotation">auto-invoked workflows</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir c-red">pipelines/</span>
+        <span class="badge badge-auto">auto</span>
+        <span class="annotation">task routers</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir c-purple">scripts/hooks/</span>
+        <span class="badge badge-auto">auto</span>
+        <span class="annotation">event-driven hooks</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir c-gold">state/</span>
+        <span class="annotation">facts, patterns, decisions, sessions</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir">database/</span>
+        <span class="annotation">schema dump</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9500;&#9472;</span>
+        <span class="dir">input/</span>
+        <span class="annotation">tasks, plans, images</span>
+      </div>
+      <div class="indent2">
+        <span class="connector">&#9492;&#9472;</span>
+        <span class="dir">output/</span>
+        <span class="annotation">generated artifacts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ TWO COLUMNS: Agents + Skills ═══ -->
+  <div class="columns">
+
+    <!-- ── LEFT: Agents ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&dagger;</div>
+          <h2>Agents</h2>
+        </div>
+        <p class="section-desc">Subagent personas with isolated context. Each is a .md prompt in agents/.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname">architect.md</span> <span class="fdesc">plans modules &amp; structure</span></li>
+          <li><span class="fname">developer.md</span> <span class="fdesc">writes production code</span></li>
+          <li><span class="fname">reviewer.md</span> <span class="fdesc">reviews logic &amp; security</span></li>
+          <li><span class="fname">test-writer.md</span> <span class="fdesc">generates unit tests</span></li>
+          <li><span class="fname">devops.md</span> <span class="fdesc">infra &amp; CI/CD</span></li>
+          <li><span class="fname c-ink-faint">...</span> <span class="fdesc">any role your project needs</span></li>
+        </ul>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> one file = one persona. The agent gets its own isolated context window &mdash; it sees only what you give it in the prompt plus the tools it&rsquo;s allowed.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Skills ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&Dagger;</div>
+          <h2>Skills</h2>
+        </div>
+        <p class="section-desc">Auto-invoked workflows. Each is a directory with SKILL.md inside skills/.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname">pipeline/</span> <span class="fdesc">task classifier &amp; router</span></li>
+          <li><span class="fname">code-style/</span> <span class="fdesc">enforces conventions</span></li>
+          <li><span class="fname">testing/</span> <span class="fdesc">test generation workflow</span></li>
+          <li><span class="fname">release/</span> <span class="fdesc">release checklist &amp; flow</span></li>
+          <li><span class="fname">review/</span> <span class="fdesc">multi-pass code review</span></li>
+          <li><span class="fname c-ink-faint">...</span> <span class="fdesc">any workflow your project needs</span></li>
+        </ul>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> skills are triggered automatically by context match or via <code style="font-size: 11px; background: var(--tag-bg); padding: 1px 4px; border-radius: 2px;">/skill-name</code>. Each has a SKILL.md with description + instructions.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ PIPELINES (full-width) ═══ -->
+  <div class="section full-width">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#9670;</div>
+      <h2>Pipelines</h2>
+      <span class="count">/pipeline {name} or /p {name}</span>
+    </div>
+    <p class="section-desc">Orchestration files in pipelines/. Each .md describes a multi-step workflow that chains skills and agents.</p>
+
+    <div class="three-col" style="margin-top: 12px;">
+      <div class="col">
+        <ul class="tree">
+          <li class="pipeline-link" data-pipeline="new-code"><span class="fname c-red">new-code.md</span> <span class="fdesc">write new feature</span></li>
+          <li class="pipeline-link" data-pipeline="fix-code"><span class="fname c-red">fix-code.md</span> <span class="fdesc">diagnose &amp; fix bugs</span></li>
+          <li class="pipeline-link" data-pipeline="review"><span class="fname c-red">review.md</span> <span class="fdesc">multi-pass review</span></li>
+          <li class="pipeline-link" data-pipeline="api-docs"><span class="fname c-red">api-docs.md</span> <span class="fdesc">API documentation</span></li>
+          <li class="pipeline-link" data-pipeline="qa-docs"><span class="fname c-red">qa-docs.md</span> <span class="fdesc">QA checklists</span></li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="tree">
+          <li class="pipeline-link" data-pipeline="tests"><span class="fname c-red">tests.md</span> <span class="fdesc">generate tests</span></li>
+          <li class="pipeline-link" data-pipeline="release"><span class="fname c-red">release.md</span> <span class="fdesc">release workflow</span></li>
+          <li class="pipeline-link" data-pipeline="hotfix"><span class="fname c-red">hotfix.md</span> <span class="fdesc">urgent hotfix</span></li>
+          <li class="pipeline-link" data-pipeline="api-contract"><span class="fname c-red">api-contract.md</span> <span class="fdesc">OpenAPI spec</span></li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="tree">
+          <li class="pipeline-link" data-pipeline="full-feature"><span class="fname c-red">full-feature.md</span> <span class="fdesc">end-to-end cycle</span></li>
+          <li class="pipeline-link" data-pipeline="gitlab"><span class="fname c-red">gitlab.md</span> <span class="fdesc">GitLab operations</span></li>
+          <li class="pipeline-link" data-pipeline="create-issue"><span class="fname c-red">create-issue.md</span> <span class="fdesc">issue from template</span></li>
+          <li class="pipeline-link" data-pipeline="decompose"><span class="fname c-red">decompose.md</span> <span class="fdesc">EPIC decomposition</span></li>
+        </ul>
+
+        <div style="margin-top: 10px; padding: 8px 10px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 11px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Click any pipeline</strong> to read its full specification.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ FLOW DIAGRAM ═══ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#8594;</div>
+      <h2>Request Flow</h2>
+    </div>
+    <p class="section-desc">Every code-related request is classified and routed through the pipeline system.</p>
+
+    <div class="flow-timeline">
+      <div class="flow-step">
+        <div class="flow-num">I</div>
+        <div class="flow-step-title">Request</div>
+        <div class="flow-step-desc">user prompt or /command</div>
+      </div>
+      <div class="flow-step active">
+        <div class="flow-num">II</div>
+        <div class="flow-step-title">Pipeline</div>
+        <div class="flow-step-desc">classifies intent, selects workflow</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">III</div>
+        <div class="flow-step-title">Skill</div>
+        <div class="flow-step-desc">loads context and orchestration rules</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">IV</div>
+        <div class="flow-step-title">Agent(s)</div>
+        <div class="flow-step-desc">isolated personas execute in parallel</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">V</div>
+        <div class="flow-step-title">Result</div>
+        <div class="flow-step-desc">code, review, docs, or artifacts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ HOOKS + STATE ═══ -->
+  <div class="columns">
+
+    <!-- ── LEFT: Hooks ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&#182;</div>
+          <h2>Hooks</h2>
+        </div>
+        <p class="section-desc">Shell scripts in scripts/hooks/ that fire on Claude Code lifecycle events.</p>
+
+        <table class="hooks-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Fires when&hellip;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="hook-event">SessionStart</td>
+              <td class="hook-desc">Session begins &mdash; inject context, load state</td>
+            </tr>
+            <tr>
+              <td class="hook-event">PreToolUse</td>
+              <td class="hook-desc">Before a tool call &mdash; validate, gate, transform</td>
+            </tr>
+            <tr>
+              <td class="hook-event">PostToolUse</td>
+              <td class="hook-desc">After a tool call &mdash; log, track, audit</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Stop</td>
+              <td class="hook-desc">Session ends &mdash; summarize, persist state</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Notification</td>
+              <td class="hook-desc">Background event &mdash; alerts, side-effects</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: State ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&#8251;</div>
+          <h2>State &amp; Context</h2>
+        </div>
+        <p class="section-desc">Persistent knowledge that survives across sessions.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname c-gold">state/</span> <span class="fdesc">persistent knowledge across sessions</span></li>
+          <li><span class="fname c-gold">state/facts.md</span> <span class="fdesc">project facts &amp; patterns</span></li>
+          <li><span class="fname c-gold">state/decisions/</span> <span class="fdesc">architecture decision records</span></li>
+          <li><span class="fname c-gold">state/sessions/</span> <span class="fdesc">session summaries</span></li>
+        </ul>
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule-light);">
+          <ul class="tree">
+            <li><span class="fname">database/</span> <span class="fdesc">schema snapshots, references</span></li>
+            <li><span class="fname">input/</span> <span class="fdesc">task specs, plans, images</span></li>
+            <li><span class="fname">output/</span> <span class="fdesc">generated artifacts</span></li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> state/ survives between sessions. Hooks write here on SessionStart and Stop, so context is never lost.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ DEMO ═══ -->
+  <div class="demo">
+    <div class="section-head">
+      <div class="section-icon icon-section" style="font-size: 14px; font-family: 'JetBrains Mono', monospace;">&gt;_</div>
+      <h2>See It In Action</h2>
+    </div>
+
+    <div class="terminal" id="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <div class="terminal-title">claude &mdash; cc-bootstrapper</div>
+      </div>
+      <div class="terminal-body" id="termBody"></div>
+    </div>
+    <button class="term-replay" id="termReplay" onclick="playTerminal()">&#8635; Replay</button>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <p style="margin-bottom: 8px;">
+      <a href="https://github.com/BeMySlaveDarlin/cc-bootstrapper" target="_blank" rel="noopener" class="github-link">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </p>
+    <p>CC-Bootstrapper &bull; Claude Code Project Harness &bull; March 2026</p>
+  </footer>
+
+</div>
+
+<!-- ═══ MODAL OVERLAY ═══ -->
+<div class="modal-overlay" id="pipelineModal">
+  <div class="modal-page">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-masthead">
+      <div class="modal-trigger-badge" id="modalBadge"></div>
+      <h2 id="modalTitle"></h2>
+      <div class="modal-sub" id="modalSub"></div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">cc-bootstrapper &bull; pipeline specification</div>
+  </div>
+</div>
+
+<script>
+const pipelines = {
+  'new-code': {
+    title: 'New Code',
+    sub: 'Full workflow for creating new features and modules',
+    badge: 'code',
+    badgeText: 'Code Generation',
+    body: `
+      <h3><span class="phase-num">Phase 0</span>Capability Detection</h3>
+      <p>Detects whether to run in TEAM mode (parallel agents) or SEQUENTIAL mode (one-by-one). Adapts to available resources.</p>
+
+      <h3><span class="phase-num">Phase 1</span>Architecture</h3>
+      <p>Plans the module structure, interfaces, and dependencies. The architect agent designs the blueprint before any code is written.</p>
+      <ul>
+        <li>Module directory structure</li>
+        <li>Interface contracts (Services/Contract/, Repository/Contract/)</li>
+        <li>Dependency mapping</li>
+      </ul>
+
+      <h3><span class="phase-num">Phase 2</span>Database</h3>
+      <p>Designs migrations, indexes, and query patterns. Raw SQL via DB::statement().</p>
+
+      <h3><span class="phase-num">Phase 3</span>Implementation</h3>
+      <p>The developer agent writes production code following the architecture blueprint. Controller &rarr; Service &rarr; Repository chain.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Tests</h3>
+      <p>Generates unit tests with proper mocking. Verifies all tests pass before proceeding.</p>
+
+      <h3><span class="phase-num">Phase 5</span>Review</h3>
+      <p>Logic and security reviewers run in parallel, producing a severity-sorted report.</p>
+
+      <h3><span class="phase-num">Phase 6</span>Finalization</h3>
+      <p>State capture, pattern updates, task log entry. Ready for commit.</p>
+    `
+  },
+  'fix-code': {
+    title: 'Fix Code',
+    sub: 'Diagnose root cause and apply targeted fixes',
+    badge: 'code',
+    badgeText: 'Bug Fix',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Diagnosis</h3>
+      <p>Root cause analysis. Traces the bug through the call chain, checks related code, identifies the exact failure point.</p>
+      <ul>
+        <li>Reproduce the symptom</li>
+        <li>Trace data flow</li>
+        <li>Identify root cause vs. symptoms</li>
+      </ul>
+
+      <h3><span class="phase-num">Phase 2</span>Fix</h3>
+      <p>The developer agent applies a minimal, targeted fix. No drive-by refactoring &mdash; fix the bug, nothing more.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Regression Tests</h3>
+      <p>Writes tests that would have caught this bug. Proves the fix works and prevents regression.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Review</h3>
+      <p>Logic reviewer verifies the fix is correct and complete. No side effects introduced.</p>
+
+      <h3><span class="phase-num">Phase 5</span>Capture</h3>
+      <p>Records the pattern in state/memory for future reference. Updates known issues if applicable.</p>
+    `
+  },
+  'review': {
+    title: 'Code Review',
+    sub: 'Multi-pass parallel review with severity sorting',
+    badge: 'review',
+    badgeText: 'Review',
+    body: `
+      <h3><span class="phase-num">Phase 0</span>Capability Detection</h3>
+      <p>TEAM mode runs logic + security reviewers in parallel. SEQUENTIAL mode runs them one after another.</p>
+
+      <h3><span class="phase-num">Phase 1</span>Parallel Review</h3>
+      <p>Two independent reviewers analyze the code simultaneously:</p>
+      <ul>
+        <li><strong>Logic reviewer</strong> &mdash; correctness, edge cases, business rules</li>
+        <li><strong>Security reviewer</strong> &mdash; injection, auth, data exposure, OWASP top 10</li>
+      </ul>
+
+      <h3><span class="phase-num">Phase 2</span>Report</h3>
+      <p>Findings are merged and sorted by severity: critical &rarr; high &rarr; medium &rarr; low. Each issue includes location, description, and suggested fix.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Capture</h3>
+      <p>Recurring patterns are saved to state/memory/patterns.md to improve future reviews.</p>
+    `
+  },
+  'tests': {
+    title: 'Unit Tests',
+    sub: 'Generate comprehensive test suites with proper mocking',
+    badge: 'code',
+    badgeText: 'Testing',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Analysis</h3>
+      <p>Scans target files and existing tests. Identifies untested methods, edge cases, and dependency boundaries.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Generation</h3>
+      <p>The test developer agent generates tests following project conventions: PHPUnit + Mockery, MockeryPHPUnitIntegration trait.</p>
+      <ul>
+        <li>Happy path tests</li>
+        <li>Edge cases and boundary values</li>
+        <li>Error/exception scenarios</li>
+        <li>Mock external dependencies</li>
+      </ul>
+
+      <h3><span class="phase-num">Phase 3</span>Verification</h3>
+      <p>Runs the generated tests to ensure they pass. Fixes any failures before delivering.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Quality Review</h3>
+      <p>Checks test quality: meaningful assertions, no false positives, proper isolation.</p>
+    `
+  },
+  'release': {
+    title: 'Release',
+    sub: 'Production release following GitFlow With Tags',
+    badge: 'release',
+    badgeText: 'Release',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Prepare</h3>
+      <p>Verifies all tasks are complete, tests pass, and the branch is ready for release.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Merge to Master</h3>
+      <p>Creates merge requests, verifies approvals, and merges to the main branch.</p>
+
+      <h3><span class="phase-num">Phase 3</span>RC Tag</h3>
+      <p>Creates a release candidate tag (e.g., v1.2-rc.1) for staging deployment and verification.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Stage Verification</h3>
+      <p>Runs through the QA checklist on staging environment. Manual verification checkpoint.</p>
+
+      <h3><span class="phase-num">Phase 5</span>Final Tag</h3>
+      <p>Creates the production tag (e.g., v1.2.0) triggering the production deploy pipeline.</p>
+
+      <h3><span class="phase-num">Phase 6</span>Post-Release</h3>
+      <p>Syncs master back to develop, updates state, closes related issues.</p>
+    `
+  },
+  'hotfix': {
+    title: 'Hotfix',
+    sub: 'Critical bug fix with GitFlow branching',
+    badge: 'release',
+    badgeText: 'Urgent',
+    body: `
+      <h3><span class="phase-num">Phase 0</span>Branch</h3>
+      <p>Creates a hotfix branch from the last final tag. Isolates the fix from ongoing development.</p>
+
+      <h3><span class="phase-num">Phase 1</span>Fix</h3>
+      <p>Executes the fix-code pipeline within the hotfix branch context.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Review</h3>
+      <p>Fast-track review focused on correctness and no regressions.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Capture</h3>
+      <p>Records findings and root cause for post-mortem.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Release</h3>
+      <p>Merges to master, creates a patch tag (e.g., v1.2.1), triggers production deploy.</p>
+
+      <h3><span class="phase-num">Phase 5</span>Sync</h3>
+      <p>Merges the hotfix back into develop to keep branches in sync.</p>
+    `
+  },
+  'full-feature': {
+    title: 'Full Feature',
+    sub: 'End-to-end feature cycle: code + docs + QA',
+    badge: 'code',
+    badgeText: 'Full Cycle',
+    body: `
+      <h3><span class="phase-num">Phase 0.5</span>Prerequisites</h3>
+      <p>Checks for SoW (Statement of Work) and API contract. Won&rsquo;t proceed without a clear specification.</p>
+
+      <h3><span class="phase-num">Phase 1</span>New Code Pipeline</h3>
+      <p>Executes the full new-code pipeline: architecture &rarr; database &rarr; code &rarr; tests &rarr; review.</p>
+
+      <h3><span class="phase-num">Phase 2</span>API Documentation</h3>
+      <p>Executes api-docs pipeline to generate endpoint documentation.</p>
+
+      <h3><span class="phase-num">Phase 3</span>QA Documentation</h3>
+      <p>Executes qa-docs pipeline to generate test checklists and Postman collections.</p>
+
+      <h3><span class="phase-num">Phase 4&ndash;5</span>Capture &amp; Finalize</h3>
+      <p>Captures all artifacts, updates state, produces a complete feature summary.</p>
+    `
+  },
+  'api-docs': {
+    title: 'API Docs',
+    sub: 'Generate API documentation from code',
+    badge: 'docs',
+    badgeText: 'Documentation',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Scan</h3>
+      <p>Scans module endpoints: routes, controllers, request validation rules, DTOs.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Generate</h3>
+      <p>Produces markdown documentation with request/response examples, validation rules, and auth requirements.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Save</h3>
+      <p>Outputs to .claude/output/contracts/ for team reference.</p>
+    `
+  },
+  'api-contract': {
+    title: 'API Contract',
+    sub: 'Generate OpenAPI 3.0 / Swagger specification',
+    badge: 'docs',
+    badgeText: 'Contract',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Scan</h3>
+      <p>Reads module files: routes, controllers, request classes, DTOs. Maps validation rules to OpenAPI types.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Generate</h3>
+      <p>Produces a complete OpenAPI 3.0 YAML specification with paths, schemas, and security definitions.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Save</h3>
+      <p>Outputs to .claude/output/contracts/{module}.yml &mdash; ready for Swagger UI or code generation.</p>
+    `
+  },
+  'gitlab': {
+    title: 'GitLab Operations',
+    sub: 'Automate GitLab via MCP integration',
+    badge: 'ops',
+    badgeText: 'Operations',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Analyze</h3>
+      <p>Classifies the request type: merge requests, issues, pipelines, releases, or wiki operations.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Execute</h3>
+      <p>Uses MCP tools to perform the operation directly in GitLab. No browser needed.</p>
+      <ul>
+        <li>Create/update merge requests</li>
+        <li>Manage issues and labels</li>
+        <li>Trigger and monitor pipelines</li>
+        <li>Create releases and tags</li>
+      </ul>
+
+      <h3><span class="phase-num">Phase 3</span>Verify</h3>
+      <p>Verifies critical operations completed successfully. Checks for conflicts, failures, or missing approvals.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Report</h3>
+      <p>Produces a summary with links and updates the task log.</p>
+    `
+  },
+  'create-issue': {
+    title: 'Create Issue',
+    sub: 'Generate GitLab issues from templates',
+    badge: 'ops',
+    badgeText: 'Issue Management',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Classify</h3>
+      <p>Determines the issue type: task, bug report, research, SoW, or release checklist.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Generate</h3>
+      <p>Fills the appropriate template with provided details. Each template has a standard structure for consistency.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Create</h3>
+      <p>Creates the issue in GitLab via MCP, assigns labels, milestone, and assignee.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Report</h3>
+      <p>Returns the issue IID and URL for immediate reference.</p>
+    `
+  },
+  'qa-docs': {
+    title: 'QA Docs',
+    sub: 'Generate test checklists and Postman collections',
+    badge: 'docs',
+    badgeText: 'QA Documentation',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Input</h3>
+      <p>Gathers project facts, API contracts, and business requirements as context for the QA agent.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Checklist</h3>
+      <p>The QA engineer agent generates a structured test checklist covering happy paths, edge cases, and error scenarios.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Postman Collection</h3>
+      <p>Generates a ready-to-import Postman collection with pre-configured requests, variables, and test scripts.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Save</h3>
+      <p>Outputs checklist and collection to .claude/output/ for team use.</p>
+    `
+  },
+  'decompose': {
+    title: 'Decompose',
+    sub: 'Break down an EPIC into atomic tasks',
+    badge: 'ops',
+    badgeText: 'Planning',
+    body: `
+      <h3><span class="phase-num">Phase 1</span>Read</h3>
+      <p>Ingests the EPIC description, SoW, and API contracts. Understands the full scope.</p>
+
+      <h3><span class="phase-num">Phase 2</span>Analyze</h3>
+      <p>Splits scope by concern: frontend vs. backend, module boundaries, dependency order.</p>
+
+      <h3><span class="phase-num">Phase 3</span>Generate Tasks</h3>
+      <p>Creates atomic task descriptions. Each task is independently implementable and testable.</p>
+
+      <h3><span class="phase-num">Phase 4</span>Create Issues</h3>
+      <p>Creates linked GitLab issues for each task, with proper labels and ordering.</p>
+
+      <h3><span class="phase-num">Phase 5</span>Report</h3>
+      <p>Produces a task table with dependencies, estimates, and assignment suggestions.</p>
+    `
+  }
+};
+
+// Modal logic
+const overlay = document.getElementById('pipelineModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalSub = document.getElementById('modalSub');
+const modalBadge = document.getElementById('modalBadge');
+const modalBody = document.getElementById('modalBody');
+
+document.querySelectorAll('.pipeline-link').forEach(el => {
+  el.addEventListener('click', () => {
+    const key = el.dataset.pipeline;
+    const data = pipelines[key];
+    if (!data) return;
+
+    modalTitle.textContent = data.title;
+    modalSub.textContent = data.sub;
+    modalBadge.textContent = data.badgeText;
+    modalBadge.className = 'modal-trigger-badge ' + data.badge;
+    modalBody.innerHTML = data.body;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => {
+  if (e.target === overlay) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+function closeModal() {
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ═══ TERMINAL ANIMATION ═══
+const termLines = [
+  { type: 'prompt', text: '> ', cmd: '/p review src/app/Modules/Orders/Controllers/OrderController.php' },
+  { type: 'blank' },
+  { type: 'skill', text: '● ', val: 'Skill(pipeline)' },
+  { type: 'dim', text: '  └ Successfully loaded skill' },
+  { type: 'blank' },
+  { type: 'output', text: '  Pipeline router classified: review → REVIEW intent.' },
+  { type: 'blank' },
+  { type: 'output', text: '  [PIPELINE: REVIEW] Review OrderController.php' },
+  { type: 'blank' },
+  { type: 'dim', text: '  Read 2 files (ctrl+o to expand)' },
+  { type: 'blank' },
+  { type: 'skill', text: '● ', val: '[MODE: SEQUENTIAL]' },
+  { type: 'output', text: '  Phase 1: Parallel Review — launching logic and security reviewers.' },
+  { type: 'blank' },
+  { type: 'dim', text: '  Read 1 file (ctrl+o to expand)' },
+  { type: 'blank' },
+  { type: 'output', text: '  Running 2 agents... (ctrl+o to expand)' },
+  { type: 'dim', text: '  ├─ Logic review OrderController · 3 tool uses · 15.4k tokens' },
+  { type: 'dim', text: '  │  └ Reading 3 files...' },
+  { type: 'dim', text: '  ├─ Security review OrderController · 0 tool uses' },
+  { type: 'dim', text: '  │  └ Initializing...' },
+  { type: 'dim', text: '  (ctrl+b to run in background)' },
+  { type: 'blank' },
+  { type: 'dim', text: '  · Smooshing... (41s · ↓ 655 tokens)' },
+  { type: 'blank' },
+  { type: 'skill', text: '● ', val: '2 agents finished (ctrl+o to expand)' },
+  { type: 'dim', text: '  ├─ Logic review OrderController · 5 tool uses · 20.6k tokens' },
+  { type: 'dim', text: '  │  └ Done' },
+  { type: 'dim', text: '  ├─ Security review OrderController · 11 tool uses · 19.9k tokens' },
+  { type: 'dim', text: '  │  └ Done' },
+  { type: 'blank' },
+  { type: 'dim', text: '  ✱ Smooshing... (1m 45s · ↓ 3.1k tokens)' },
+  { type: 'blank' },
+  { type: 'output', text: '  Phase 2: Report' },
+  { type: 'blank' },
+  { type: 'agent', text: '  Verdict: BLOCK', val: ' — 2 blockers (missing final, method injection).' },
+  { type: 'blank' },
+  { type: 'output', text: '  [REVIEW COMPLETE]' },
+  { type: 'output', text: '  Logic: BLOCK (11 findings: 2 BLOCK, 7 WARN, 2 INFO)' },
+  { type: 'output', text: '  Security: PASS WITH WARNINGS (7 findings: 0 BLOCK, 4 WARN, 3 INFO)' },
+  { type: 'red', text: '  Overall: ', val: 'BLOCK' },
+  { type: 'blank' },
+  { type: 'dim', text: '  ✱ Worked for 1m 54s' },
+  { type: 'blank' },
+  { type: 'prompt', text: '> ', cursor: true },
+];
+
+let termTimer = null;
+
+function playTerminal() {
+  const body = document.getElementById('termBody');
+  body.innerHTML = '';
+  if (termTimer) clearTimeout(termTimer);
+
+  let i = 0;
+  function nextLine() {
+    if (i >= termLines.length) return;
+    const line = termLines[i];
+    const el = document.createElement('div');
+    el.className = 'term-line';
+    el.style.animationDelay = '0s';
+
+    if (line.type === 'blank') {
+      el.innerHTML = '&nbsp;';
+    } else if (line.type === 'prompt') {
+      let html = '<span class="term-prompt">' + line.text + '</span>';
+      if (line.cmd) {
+        html += '<span class="term-cmd">' + line.cmd + '</span>';
+      }
+      if (line.cursor) {
+        html += '<span class="term-cursor"></span>';
+      }
+      el.innerHTML = html;
+    } else if (line.type === 'separator') {
+      el.className = 'term-line term-separator';
+      el.textContent = line.text;
+    } else if (line.type === 'dim') {
+      el.innerHTML = '<span class="term-dim">' + line.text + '</span>';
+    } else if (line.type === 'skill') {
+      el.innerHTML = '<span class="term-skill">' + line.text + '</span><span class="term-highlight">' + line.val + '</span>';
+    } else if (line.type === 'red') {
+      el.innerHTML = '<span class="term-red">' + line.text + '</span><span class="term-highlight">' + line.val + '</span>';
+    } else if (line.type === 'agent') {
+      el.innerHTML = '<span class="term-agent">' + line.text + '</span><span class="term-highlight">' + line.val + '</span>';
+    } else if (line.type === 'success') {
+      el.innerHTML = '<span class="term-success">' + line.text + '</span>';
+    } else {
+      el.innerHTML = '<span class="term-output">' + line.text + '</span>';
+    }
+
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+
+    i++;
+    const delay = line.type === 'blank' ? 80 :
+                  line.type === 'separator' ? 120 :
+                  line.type === 'prompt' && line.cmd ? 600 :
+                  line.type === 'agent' ? 450 :
+                  line.type === 'skill' ? 400 :
+                  line.type === 'red' ? 350 :
+                  line.type === 'success' ? 300 :
+                  line.type === 'dim' ? 150 :
+                  200;
+    termTimer = setTimeout(nextLine, delay);
+  }
+
+  nextLine();
+}
+
+// Auto-play when terminal scrolls into view
+const termEl = document.getElementById('terminal');
+let termPlayed = false;
+const termObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !termPlayed) {
+    termPlayed = true;
+    setTimeout(playTerminal, 300);
+  }
+}, { threshold: 0.3 });
+termObserver.observe(termEl);
+
+// Replay resets
+document.getElementById('termReplay').addEventListener('click', () => {
+  termPlayed = true;
+});
+</script>
+
+</body>
+</html>
