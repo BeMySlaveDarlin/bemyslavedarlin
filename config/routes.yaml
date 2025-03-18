@@ -1,0 +1,24 @@
+index:
+    path: /
+    controller: App\Component\Common\Controller\IndexController::indexAction
+    methods: [GET]
+
+get-quotes:
+    path: /api/quotes
+    controller: App\Component\Common\Controller\ApiController::getQuotesAction
+    methods: [GET]
+
+get-contacts:
+    path: /api/contacts
+    controller: App\Component\Common\Controller\ApiController::getContactsAction
+    methods: [GET]
+
+get-about:
+    path: /api/about
+    controller: App\Component\Common\Controller\ApiController::getAboutAction
+    methods: [GET]
+
+get-rating:
+    path: /api/rating
+    controller: App\Component\Common\Controller\ApiController::getRatingAction
+    methods: [GET]

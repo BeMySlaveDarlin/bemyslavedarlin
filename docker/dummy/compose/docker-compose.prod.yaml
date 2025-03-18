@@ -1,0 +1,26 @@
+# Production environment override
+services:
+  app:
+    build:
+      context: ./docker/php
+      target: php_prod
+      args:
+        APP_PORT: ${APP_PORT}
+        TIMEZONE: ${TIMEZONE}
+        COMPOSER_VERSION: ${COMPOSER_VERSION}
+    volumes:
+      - .:/var/www/app
+
+  nginx:
+    build:
+      context: ./docker/nginx
+
+  node:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+      args:
+        NODE_JS_APP_PORT: ${NODE_JS_APP_PORT}
+        NODE_MODE: ${NODE_MODE}
+        APP_ENV: ${APP_ENV}
+    command: npm run ${NODE_MODE}

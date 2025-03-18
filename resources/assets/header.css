@@ -1,0 +1,14 @@
+header {
+    width: 100%;
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    height: 210px;
+    overflow: hidden;
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+    header {
+        height: 400px;
+    }
+}
