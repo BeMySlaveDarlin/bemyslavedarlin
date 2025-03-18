@@ -1,19 +1,14 @@
 <script>
-import {mapActions, mapState} from 'pinia'
-import {useGlobalStore} from "@/store/global.js"
-import ContactButton from "@/components/ui/items/ContactButton.vue"
-import AboutButton from "@/components/ui/items/AboutButton.vue";
+import {useGlobalStore} from "@/store/index"
+import ContactButton from "@/components/ui/buttons/ContactButton.vue"
+import AboutButton from "@/components/ui/buttons/AboutButton.vue"
 
 export default {
   components: {ContactButton, AboutButton},
   computed: {
-    ...mapState(useGlobalStore, ['contacts'])
-  },
-  mounted() {
-    this.fetchContacts()
-  },
-  methods: {
-    ...mapActions(useGlobalStore, ['fetchContacts'])
+    contacts() {
+      return useGlobalStore().contacts
+    }
   }
 }
 </script>

@@ -14,11 +14,6 @@ class JsonBType extends Type
 {
     public const string NAME = 'jsonb';
 
-    public function getName(): string
-    {
-        return self::NAME;
-    }
-
     /**
      * @throws Exception
      */
@@ -57,5 +52,10 @@ class JsonBType extends Type
         } catch (JsonException $e) {
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }
+    }
+
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }

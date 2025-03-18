@@ -1,6 +1,5 @@
 <script>
-import {mapState} from "pinia"
-import {useGlobalStore} from "@/store/global.js"
+import {useGlobalStore} from "@/store/index"
 import ItemSkill from "@/components/scroller/items/ItemSkill.vue"
 
 export default {
@@ -23,7 +22,9 @@ export default {
     await this.loadImages()
   },
   computed: {
-    ...mapState(useGlobalStore, ['isIntersectingSkill'])
+    conditions() {
+      return useGlobalStore().conditions
+    },
   },
   mounted() {
     this.createRandomScrollInterval()
@@ -65,7 +66,7 @@ export default {
     }
   },
   watch: {
-    isIntersectingSkill(newValue) {
+    'conditions.isIntersectingSkill'(newValue) {
       if (newValue === true) {
         this.itemsList = this.itemsList.filter(item => !item.name)
       }

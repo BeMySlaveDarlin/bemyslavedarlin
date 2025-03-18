@@ -38,11 +38,16 @@ class AboutEntity implements JsonSerializable
     public string $type;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public \DateTimeImmutable $createdAt;
+    public DateTimeImmutable $createdAt;
 
     public function jsonSerialize(): array
     {
-        return ['id' => $this->id, 'title' => $this->title, 'type' => $this->type, 'description' => $this->description];
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'type' => $this->type,
+            'description' => $this->description,
+        ];
     }
 
     #[PrePersist]

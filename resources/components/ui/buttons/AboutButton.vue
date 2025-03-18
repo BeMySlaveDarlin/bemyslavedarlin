@@ -1,7 +1,7 @@
 <script>
-import {mapActions} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import aboutImage from '@/assets/images/ui/about.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import aboutImage from "@/assets/images/ui/buttons/about.webp"
 
 export default {
   data() {
@@ -9,10 +9,15 @@ export default {
       currentImage: aboutImage,
     }
   },
+  computed: {
+    player() {
+      return useGlobalStore().player
+    }
+  },
   methods: {
-    ...mapActions(useGlobalStore, ['about']),
+    ...mapActions(useGlobalStore, ['togglePopup']),
     handleClick() {
-      console.log('click')
+      this.togglePopup('about')
     }
   }
 }

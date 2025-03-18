@@ -1,7 +1,7 @@
 <script>
-import {mapActions} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import leaderboardImage from '@/assets/images/ui/leaderboard.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import leaderboardImage from "@/assets/images/ui/buttons/leaderboard.webp"
 
 export default {
   data() {
@@ -9,10 +9,15 @@ export default {
       currentImage: leaderboardImage,
     }
   },
+  computed: {
+    player() {
+      return useGlobalStore().player
+    }
+  },
   methods: {
-    ...mapActions(useGlobalStore, ['rating']),
+    ...mapActions(useGlobalStore, ['togglePopup']),
     handleClick() {
-      console.log('click')
+      this.togglePopup('rating')
     }
   }
 }

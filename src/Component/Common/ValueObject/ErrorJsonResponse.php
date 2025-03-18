@@ -19,13 +19,15 @@ class ErrorJsonResponse extends JsonResponse
     public function __construct(
         string $error = '',
         int $code = 500,
-        Throwable $throwable = null
+        Throwable $throwable = null,
+        ?string $message = null,
     ) {
         $code = $this->getThrowableCode($code, $throwable);
 
         parent::__construct([
             'errorCode' => $code,
             'errorDescription' => $error,
+            'errorMessage' => $message,
             'data' => null,
         ], $code);
     }

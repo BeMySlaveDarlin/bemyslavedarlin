@@ -3,6 +3,7 @@
 namespace App\Component\Common\Entity;
 
 use App\Component\Common\Repository\PlayerRepository;
+use App\Service\Doctrine\Type\JsonBValue;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -13,11 +14,13 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\PreUpdate;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[Entity(repositoryClass: PlayerRepository::class)]
 #[Table(name: '`players`')]
+#[UniqueConstraint(name: "idx_players_nickname", columns: ["nickname"])]
 #[HasLifecycleCallbacks]
 class PlayerEntity implements JsonSerializable
 {
@@ -26,8 +29,8 @@ class PlayerEntity implements JsonSerializable
     #[Column(type: Types::INTEGER)]
     public int $id;
 
-    #[Column(type: Types::STRING, length: 255, nullable: true)]
-    public string $nickname;
+    #[Column(type: Types::STRING, length: 255, unique: true, nullable: true)]
+    public ?string $nickname = null;
 
     #[Column(type: Types::STRING, length: 64, nullable: false)]
     #[NotBlank]
@@ -37,15 +40,29 @@ class PlayerEntity implements JsonSerializable
     #[NotBlank]
     public string $money = '0';
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public \DateTimeImmutable $createdAt;
+    #[Column(type: "jsonb", nullable: true, options: ["jsonb" => true])]
+    public ?JsonBValue $skills = null;
+
+    #[Column(type: Types::TEXT)]
+    #[NotBlank]
+    public string $token;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public \DateTimeImmutable $updatedAt;
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $updatedAt;
 
     public function jsonSerialize(): array
     {
-        return ['id' => $this->id, 'nick' => $this->nickname, 'grade' => $this->grade, 'money' => $this->money];
+        return [
+            'id' => $this->id,
+            'fingerprint' => $this->token,
+            'nick' => $this->nickname,
+            'grade' => $this->grade,
+            'money' => $this->money,
+            'skills' => $this->skills,
+        ];
     }
 
     #[PrePersist]
@@ -58,6 +75,6 @@ class PlayerEntity implements JsonSerializable
     #[PreUpdate]
     public function preUpdate(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 }

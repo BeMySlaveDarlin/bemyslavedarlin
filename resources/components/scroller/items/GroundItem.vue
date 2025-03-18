@@ -1,10 +1,9 @@
 <script>
-import {mapState} from "pinia"
-import {useGlobalStore} from "@/store/global.js"
-import bubble from '@/assets/images/items/skills/bubble.webp'
-import phpIcon from '@/assets/images/items/skills/items/php.webp';
-import symfonyIcon from '@/assets/images/items/skills/items/symfony.webp';
-import vuejsIcon from '@/assets/images/items/skills/items/vue.webp';
+import {useGlobalStore} from "@/store/index"
+import bubble from "@/assets/images/items/skills/bubble.webp"
+import phpIcon from "@/assets/images/items/skills/items/php.webp"
+import symfonyIcon from "@/assets/images/items/skills/items/symfony.webp"
+import vuejsIcon from "@/assets/images/items/skills/items/vue.webp"
 
 export default {
   data() {
@@ -16,9 +15,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(useGlobalStore, ['player']),
+    player() {
+      return useGlobalStore().player
+    },
     currentYear() {
-      return new Date().getFullYear();
+      return new Date().getFullYear()
     }
   },
   methods: {
@@ -123,7 +124,6 @@ export default {
   overflow: hidden;
   position: relative;
   animation: scale 3s ease-in-out infinite;
-  user-select: none;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -136,7 +136,6 @@ export default {
   position: relative;
   top: 15%;
   left: 15%;
-  user-select: none;
 }
 
 @keyframes scale {

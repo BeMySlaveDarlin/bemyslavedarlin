@@ -1,7 +1,7 @@
 <script>
-import {mapActions} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import infoImage from '@/assets/images/ui/info.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import infoImage from "@/assets/images/ui/buttons/info.gif"
 
 export default {
   data() {
@@ -9,10 +9,15 @@ export default {
       currentImage: infoImage,
     }
   },
+  computed: {
+    player() {
+      return useGlobalStore().player
+    }
+  },
   methods: {
-    ...mapActions(useGlobalStore, ['about']),
+    ...mapActions(useGlobalStore, ['togglePopup']),
     handleClick() {
-      console.log('click')
+      this.togglePopup('gameInfo')
     }
   }
 }

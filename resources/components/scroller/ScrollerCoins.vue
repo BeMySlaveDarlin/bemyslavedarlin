@@ -1,6 +1,5 @@
 <script>
-import {mapState} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
+import {useGlobalStore} from "@/store/index"
 import ItemCoin from "@/components/scroller/items/ItemCoin.vue"
 
 export default {
@@ -19,7 +18,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(useGlobalStore, ['isIntersectingMoney'])
+    conditions() {
+      return useGlobalStore().conditions
+    }
   },
   mounted() {
     this.createRandomScrollInterval()
@@ -48,7 +49,7 @@ export default {
     }
   },
   watch: {
-    isIntersectingMoney(newValue) {
+    'conditions.isIntersectingMoney'(newValue) {
       if (newValue === true) {
         this.itemsList = []
       }

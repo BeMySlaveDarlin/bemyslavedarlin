@@ -1,10 +1,10 @@
 <script>
-import {mapActions, mapState} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import charImage from '@/assets/images/items/char/char.webp'
-import charPoopedImage from '@/assets/images/items/char/char-pooped.webp'
-import medalImage from '@/assets/images/items/char/medal.webp'
-import moneyImage from '@/assets/images/items/char/money.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import charImage from "@/assets/images/items/char/char.webp"
+import charPoopedImage from "@/assets/images/items/char/char-pooped.webp"
+import medalImage from "@/assets/images/items/char/medal.webp"
+import moneyImage from "@/assets/images/items/char/money.webp"
 
 export default {
   data() {
@@ -18,14 +18,24 @@ export default {
     }
   },
   computed: {
-    ...mapState(useGlobalStore, ['player', 'quotes', 'isIntersectingPoop', 'jumpState'])
+    player() {
+      return useGlobalStore().player
+    },
+    quotes() {
+      return useGlobalStore().quotes
+    },
+    popups() {
+      return useGlobalStore().popups
+    },
+    conditions() {
+      return useGlobalStore().conditions
+    }
   },
   mounted() {
     this.updateJumpTime()
     window.addEventListener("resize", this.updateJumpTime)
 
     this.charImage = charImage
-    this.fetchQuotes()
     this.startIntersectionCheck('poop')
     this.startIntersectionCheck('coin')
     this.startIntersectionCheck('skill')
@@ -34,7 +44,7 @@ export default {
     window.removeEventListener("resize", this.updateJumpTime)
   },
   methods: {
-    ...mapActions(useGlobalStore, ['checkIntersection', 'fetchQuotes', 'toggleJump', 'getFormatterMoney']),
+    ...mapActions(useGlobalStore, ['checkIntersection', 'formatMoney', 'toggleJump']),
     getImagePath(isIntersectingPoop) {
       return isIntersectingPoop ? charPoopedImage : charImage
     },
@@ -45,8 +55,10 @@ export default {
 
       this.jumping = true
 
-      const randomIndex = Math.floor(Math.random() * this.quotes.items.length)
-      this.player.quote = this.quotes.items[randomIndex]
+      if (!this.player.quote) {
+        const randomIndex = Math.floor(Math.random() * this.quotes.items.length)
+        this.player.quote = this.quotes.items[randomIndex]
+      }
 
       const height = element.offsetHeight
 
@@ -59,16 +71,19 @@ export default {
 
 
         setTimeout(() => {
+          this.player.quote = null
+        }, this.jumpTime * 3000)
+        setTimeout(() => {
           element.style.transition = ''
           element.style.bottom = ''
           this.jumping = false
-          this.player.quote = null
         }, this.jumpTime * 1000)
       }, this.jumpTime * 700)
     },
     startIntersectionCheck(type) {
       this.intervals[type] = setInterval(() => {
-        const character = document.querySelector('.character-container');
+        if (this.conditions.isPopupActive) return
+        const character = document.querySelector('.character-container')
         const object = document.querySelector('.' + type + '-item')
         if (character && object) {
           const rectA = character.getBoundingClientRect()
@@ -83,10 +98,10 @@ export default {
     }
   },
   watch: {
-    isIntersectingPoop(newValue) {
+    'conditions.isIntersectingPoop'(newValue) {
       this.charImage = this.getImagePath(newValue)
     },
-    jumpState(newValue) {
+    'conditions.isJumpActive'(newValue) {
       if (newValue) {
         this.jump()
         this.toggleJump()
@@ -104,12 +119,12 @@ export default {
     </div>
     <div class="character-badge money-badge">
       <img :src="moneyImage" alt="Money" class="badge-icon"/>
-      {{ player.money }}
+      {{ this.formatMoney(player.money) }}
     </div>
     <div class="character-image">
       <img
           :src="this.charImage"
-          :class="isIntersectingPoop ? 'pooped' : ''"
+          :class="conditions.isIntersectingPoop ? 'pooped' : ''"
           alt="Character"
           class="character-item"
       />
@@ -128,26 +143,19 @@ export default {
   text-transform: uppercase;
   padding: 0.2rem 0 0.2rem 0.5rem;
   margin: 0.1rem;
-  user-select: none;
   left: -20px;
 }
 
 .money-badge {
   top: -50px;
   color: #428800;
-  background: #ddffad;
+  background: #bcffad;
 }
 
 .grade-badge {
   top: -80px;
   color: #0b5cb8;
   background: #a6f7f4;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .character-badge {
-    font-size: 1.2rem;
-  }
 }
 
 .badge-icon {
@@ -166,10 +174,13 @@ export default {
   animation: float 3s ease-in-out infinite;
   cursor: pointer;
   outline: none;
-  user-select: none;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
+  .character-badge {
+    font-size: 1.2rem;
+  }
+
   .character-container {
     width: 180px;
     height: 250px;

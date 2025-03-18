@@ -1,59 +1,85 @@
 <script>
-import {mapActions, mapState} from "pinia"
-import {useGlobalStore} from "@/store/global.js"
-import ScrollerNature from "@/components/scroller/ScrollerNature.vue"
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import ButtonsLeft from "@/components/ui/ButtonsLeft.vue"
+import ButtonsRight from "@/components/ui/ButtonsRight.vue"
 import GroundItem from "@/components/scroller/items/GroundItem.vue"
 import ItemCharacter from "@/components/scroller/items/ItemCharacter.vue"
-import ScrollerPoops from "@/components/scroller/ScrollerPoops.vue"
+import PopupContainer from "@/components/ui/PopupContainer.vue"
 import ScrollerCoins from "@/components/scroller/ScrollerCoins.vue"
+import ScrollerNature from "@/components/scroller/ScrollerNature.vue"
+import ScrollerPoops from "@/components/scroller/ScrollerPoops.vue"
 import ScrollerSkills from "@/components/scroller/ScrollerSkills.vue"
-import LeftButtons from "@/components/ui/LeftButtons.vue"
-import RightButtons from "@/components/ui/RightButtons.vue"
 
 export default {
   components: {
-    LeftButtons,
-    RightButtons,
-    ScrollerSkills,
-    ScrollerPoops,
+    ButtonsLeft,
+    ButtonsRight,
+    GroundItem,
+    ItemCharacter,
+    PopupContainer,
     ScrollerCoins,
     ScrollerNature,
-    ItemCharacter,
-    GroundItem
+    ScrollerPoops,
+    ScrollerSkills,
   },
   data() {
     return {
-      cloudStartTime: 1100,
       bushStartTime: 2500,
-      treeStartTime: 1500,
-      treeSmallStartTime: 3500,
+      cloudStartTime: 1100,
       coinsStartTime: 2300,
       poopsStartTime: 4200,
       skillsStartTime: 1200,
+      treeSmallStartTime: 3500,
+      treeStartTime: 1500,
     }
   },
   computed: {
-    ...mapState(useGlobalStore, ['player'])
+    player() {
+      return useGlobalStore().player
+    },
+    popups() {
+      return useGlobalStore().popups
+    },
+    conditions() {
+      return useGlobalStore().conditions
+    }
   },
   mounted() {
-    document.querySelector('.main-container').focus()
+    this.savePlayer()
+    this.fetchQuotes()
+    this.fetchInfo()
+    this.fetchContacts()
+    this.setFocus()
   },
   methods: {
-    ...mapActions(useGlobalStore, ['toggleJump']),
-    handleBlur() {
-      document.querySelector('.main-container').focus()
-    },
+    ...mapActions(useGlobalStore, ['toggleJump', 'fetchContacts', 'fetchQuotes', 'fetchInfo', 'fetchRating', 'savePlayer']),
     handlePointer(event) {
       if (
+          event.target.closest('.popup-overlay') ||
           event.target.closest('.buttons-container') ||
-          event.target.closest('.buttons-container')
+          this.conditions.isPopupActive
       ) {
-        return;
+        return
       }
-      this.toggleJump();
+
+      this.toggleJump()
     },
-    handleSpace(event) {
-      this.toggleJump();
+    handleSpace() {
+      if (this.conditions.isPopupActive) return
+      this.toggleJump()
+    },
+    setFocus() {
+      if (this.conditions.isPopupActive) {
+        document.querySelector('.main-container').blur()
+      } else {
+        document.querySelector('.main-container').focus()
+      }
+    }
+  },
+  watch: {
+    'conditions.isPopupActive': function (newValue) {
+      this.setFocus()
     }
   }
 }
@@ -64,16 +90,18 @@ export default {
       class="main-container"
       @click="handlePointer"
       @keydown.space="handleSpace"
-      @touchstart="handlePointer"
-      @blur="handleBlur"
+      @touchend="handlePointer"
+      @touchcancel="handlePointer"
+      @blur="setFocus"
       tabindex="0"
   >
+    <PopupContainer v-if="conditions.isPopupActive"/>
     <header>
       <div v-if="player.quote !== null" class="quote-container">
         {{ player.quote.text }}
       </div>
-      <LeftButtons/>
-      <RightButtons/>
+      <ButtonsLeft/>
+      <ButtonsRight/>
       <ScrollerNature itemType="cloud" :start="cloudStartTime" :isBottom="false"/>
     </header>
     <main>
@@ -93,13 +121,21 @@ export default {
 </template>
 
 <style scoped>
+.main-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  outline: none;
+}
+
 .quote-container {
   width: auto;
   height: auto;
   display: inline-block;
   position: relative;
-  left: 50%;
   top: 10px;
+  left: 50%;
   transform: translateX(-50%);
   white-space: pre-line;
   text-align: justify;
@@ -130,7 +166,6 @@ export default {
   bottom: 10px;
   color: #ccc;
 }
-
 
 @media (max-width: 1024px) and (orientation: portrait) {
   .quote-container {

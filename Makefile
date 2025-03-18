@@ -14,9 +14,10 @@ up:
 down:
 	@echo "Stopping containers"
 	@docker compose --env-file .env down
+	@rm -rf public/assets
 node-build:
 	@echo "Running composer update"
-	@docker exec -it ${APP_NAME}.service.node npm run build
+	@docker compose run --rm node npm run build
 composer-install:
 	@echo "Running composer install"
 	@docker exec -it ${APP_NAME}.service.app composer install

@@ -1,5 +1,5 @@
 <script>
-import poopGif from '@/assets/images/items/poop.gif'
+import poopGif from "@/assets/images/items/poop.gif"
 
 export default {
   props: {
@@ -35,15 +35,14 @@ export default {
 
 <style scoped>
 .poop-container {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   display: inline;
   overflow: hidden;
   position: absolute;
   right: -200px;
   bottom: 5px;
   animation: scroll-left 15s linear forwards;
-  user-select: none;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
@@ -56,7 +55,6 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  user-select: none;
 }
 
 @keyframes scroll-left {

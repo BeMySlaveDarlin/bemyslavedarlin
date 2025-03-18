@@ -35,11 +35,15 @@ class ContactEntity implements JsonSerializable
     public ?string $type = null;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public \DateTimeImmutable $createdAt;
+    public DateTimeImmutable $createdAt;
 
     public function jsonSerialize(): array
     {
-        return ['id' => $this->id, 'type' => $this->type, 'contact' => $this->contact];
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'contact' => $this->contact,
+        ];
     }
 
     #[PrePersist]

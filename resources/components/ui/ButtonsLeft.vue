@@ -1,18 +1,18 @@
 <script>
-import ResetButton from "@/components/ui/items/ResetButton.vue"
-import SoundButton from "@/components/ui/items/SoundButton.vue"
-import InfoButton from "@/components/ui/items/InfoButton.vue"
-import RatingButton from "@/components/ui/items/RatingButton.vue";
+import ResetButton from "@/components/ui/buttons/ResetButton.vue"
+import SoundButton from "@/components/ui/buttons/SoundButton.vue"
+import GameInfoButton from "@/components/ui/buttons/GameInfoButton.vue"
+import RatingButton from "@/components/ui/buttons/RatingButton.vue"
 
 export default {
-  components: {SoundButton, ResetButton, InfoButton, RatingButton}
+  components: {SoundButton, ResetButton, GameInfoButton, RatingButton}
 }
 </script>
 
 <template>
   <div class="buttons-container">
     <RatingButton/>
-    <InfoButton/>
+    <GameInfoButton/>
     <SoundButton/>
     <ResetButton/>
   </div>

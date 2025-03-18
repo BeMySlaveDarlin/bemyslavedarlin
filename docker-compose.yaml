@@ -11,7 +11,6 @@ services:
       - .env
     depends_on:
       - database
-      - memcached
     working_dir: /var/www/app
     volumes:
       - .:/var/www/app
@@ -45,15 +44,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  memcached:
-    container_name: ${APP_NAME}.service.memcached
-    image: memcached
-    restart: unless-stopped
-    ports:
-      - ${MEMCACHED_PORTS}
-    networks:
-      - app_network
-
   database:
     container_name: ${APP_NAME}.service.db
     image: postgres:${POSTGRES_VERSION:-15}-alpine
@@ -75,23 +65,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  redis:
-    container_name: ${APP_NAME}.service.redis
-    image: redis:5
-    restart: unless-stopped
-    env_file:
-      - .env
-    networks:
-      - app_network
-    volumes:
-      - redis_data:/data
-    command: [ "redis-server", "--appendonly", "yes" ]
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
   node:
     container_name: ${APP_NAME}.service.node
     healthcheck:
@@ -99,6 +72,8 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
+    depends_on:
+      - app
     env_file:
       - .env
     working_dir: /var/www/app
@@ -117,7 +92,6 @@ services:
 
 volumes:
   database_data:
-  redis_data:
 
 networks:
   app_network:

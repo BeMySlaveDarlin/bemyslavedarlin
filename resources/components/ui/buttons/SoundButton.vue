@@ -1,8 +1,8 @@
 <script>
-import {mapActions, mapState} from 'pinia'
-import {useGlobalStore} from '@/store/global.js'
-import soundOn from '@/assets/images/ui/sound-on.webp'
-import soundOff from '@/assets/images/ui/sound-off.webp'
+import {mapActions} from "pinia"
+import {useGlobalStore} from "@/store/index"
+import soundOn from "@/assets/images/ui/buttons/sound-on.webp"
+import soundOff from "@/assets/images/ui/buttons/sound-off.webp"
 
 export default {
   data() {
@@ -12,7 +12,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(useGlobalStore, ['isSoundEnabled'])
+    conditions() {
+      return useGlobalStore().conditions
+    }
   },
   methods: {
     ...mapActions(useGlobalStore, ['toggleSound'])
@@ -22,7 +24,7 @@ export default {
 
 <template>
   <button @click="toggleSound" class="sound-button">
-    <img :src="isSoundEnabled ? soundOn : soundOff" alt="Sound Toggle"/>
+    <img :src="conditions.isSoundEnabled ? soundOn : soundOff" alt="Sound Toggle"/>
   </button>
 </template>
 
