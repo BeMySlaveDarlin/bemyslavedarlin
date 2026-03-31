@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BeMySlaveDarlin — Newspaper Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --paper: #f5f0e8;
+  --ink: #1a1a18;
+  --ink-light: #4a4a45;
+  --ink-faint: #8a8a82;
+  --rule: #c8c0b4;
+  --rule-light: #e0d8cc;
+  --accent-red: #c0392b;
+  --accent-gold: #b8860b;
+  --ground: #6b5744;
+  --ground-dark: #4a3728;
+  --ground-bottom: #3d2b1f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--cream);
+  color: var(--ink);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.game {
+  width: 100%; height: 100%;
+  position: absolute;
+  overflow: hidden;
+  outline: none;
+  background: var(--cream);
+  cursor: pointer;
+}
+
+/* ══════ HEADER ══════ */
+header {
+  width: 100%;
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  pointer-events: none;
+}
+
+.masthead {
+  text-align: center;
+  padding: 8px 0 6px;
+  border-bottom: 3px double var(--ink);
+  margin: 0;
+  pointer-events: auto;
+  background: rgba(245,240,232,0.88);
+  backdrop-filter: blur(4px);
+  position: relative;
+}
+
+.masthead h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900; font-size: 32px;
+  letter-spacing: -0.5px; line-height: 1;
+}
+.masthead-logo {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.masthead h1 .dot { color: var(--accent-red); }
+
+.dateline {
+  display: flex; justify-content: space-between;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+  color: var(--ink-faint); padding: 3px 20px;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(245,240,232,0.88);
+  backdrop-filter: blur(4px);
+}
+
+.quote-bar {
+  text-align: center; padding: 8px 60px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-style: italic; font-size: 16px; color: var(--ink-light);
+  border-bottom: 1px solid var(--rule-light);
+  background: rgba(245,240,232,0.88);
+  backdrop-filter: blur(4px);
+  opacity: 0; transition: opacity 0.5s; min-height: 34px;
+}
+.quote-bar.visible { opacity: 1; }
+.quote-bar::before { content: '\201C'; color: var(--rule); margin-right: 4px; }
+.quote-bar::after { content: '\201D'; color: var(--rule); margin-left: 4px; }
+
+/* ══════ NAV ══════ */
+.nav-left, .nav-right {
+  position: absolute; top: 75px; z-index: 25;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.nav-left { left: 10px; }
+.nav-right { right: 10px; }
+
+.nav-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1.5px solid var(--rule); background: var(--paper);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  overflow: hidden; padding: 8px; pointer-events: auto;
+  text-decoration: none;
+}
+.nav-btn:hover {
+  border-color: var(--ink); background: #fff;
+  transform: scale(1.08); box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+.nav-btn img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: sepia(40%) contrast(1.1);
+}
+
+/* ══════ MAIN ══════ */
+main {
+  width: 100%; position: absolute;
+  top: 0; bottom: 0; z-index: 2; overflow: hidden;
+}
+
+/* ══════ CHARACTER ══════ */
+.character {
+  width: 120px; height: 170px; position: absolute;
+  bottom: 35px; left: 30%;
+  animation: float 3s ease-in-out infinite; z-index: 18;
+}
+.character img { width: 100%; height: 100%; object-fit: contain; }
+
+.char-badge {
+  position: absolute;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 14px; font-weight: 700; padding: 2px 10px;
+  white-space: nowrap; display: flex; align-items: center; gap: 4px;
+  border: 1px solid var(--rule); background: var(--paper);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.char-badge img { width: 18px; height: 18px; }
+.badge-grade { top: -54px; left: -15px; border-bottom: 2px solid var(--ink); }
+.badge-money { top: -24px; left: -15px; color: var(--accent-gold); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Jump handled via JS transition on bottom */
+
+/* ══════ SCROLLING ITEMS ══════ */
+.scroll-item { position: absolute; }
+
+@keyframes scrollLeft {
+  from { right: -250px; }
+  to { right: 110%; }
+}
+
+/* Clouds — distributed across haze layers */
+.cloud-far {
+  opacity: 0.4; z-index: 3;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.cloud-far img { width: 65px; height: auto; }
+
+.cloud-mid {
+  opacity: 0.6; z-index: 9;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.cloud-mid img { width: 85px; height: auto; }
+
+.cloud-near {
+  opacity: 0.8; z-index: 15;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.cloud-near img { width: 110px; height: auto; }
+
+/* ═══ DIORAMA LAYER SYSTEM ═══
+
+  Front (z-index high):
+   1.  z:22 bushes-front       bottom: 80px
+   2.  z:20 trees-front        bottom: 75px
+   3.  z:18 character+items    bottom: 90px
+   --- ground-1 z:17           bottom: 80px, h:8px ---
+   4.  z:16 haze-1 (10%)
+   5.  z:14 bushes-mid         bottom: 110px
+   6.  z:12 trees-mid          bottom: 105px
+   --- ground-2 z:11           bottom: 110px, h:8px ---
+   7.  z:10 haze-2 (20%)
+   8.  z:8  bushes-back        bottom: 140px
+   9.  z:6  trees-back         bottom: 135px
+   --- ground-3 z:5            bottom: 140px, h:8px ---
+  10.  z:4  haze-3 (30%)
+  11.  z:2  trees-far          bottom: 165px
+
+  Back (z-index low)
+*/
+
+/* Shared */
+.haze {
+  position: absolute; left: 0; width: 100%;
+  background: var(--cream);
+  pointer-events: none;
+}
+
+.ground-fill {
+  position: absolute; left: 0; width: 100%;
+  pointer-events: none;
+}
+
+/* Base tone: #937C52 (matches sprite bases)
+   Farther = lighter, nearer = darker */
+
+.ground-4 { background: #a89068; }
+.ground-3 { background: #937C52; }
+.ground-2 { background: #7f6b45; }
+.ground-1 { background: #6b5a3a; z-index: 17; bottom: 0; height: 80px; }
+
+/* --- Layer 11: farthest trees --- */
+.tree-far {
+  z-index: 2; bottom: 148px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.tree-far img { height: 90px; width: auto; }
+
+/* --- Layer 10: haze-3 --- */
+.haze-3 {
+  bottom: 145px; height: 200px;
+  z-index: 4; opacity: 0.3;
+}
+
+/* --- ground-4: farthest --- */
+.ground-4 { z-index: 1; bottom: 0; height: 160px; }
+
+/* --- ground-3: far --- */
+.ground-3 { z-index: 5; bottom: 0; height: 145px; }
+
+/* --- Layer 9: back trees --- */
+.tree-back {
+  z-index: 6; bottom: 130px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.tree-back img { height: 130px; width: auto; }
+
+/* --- Layer 8: back bushes --- */
+/* bush-back: tree-back bottom(130) - 10% tree-back height(130) = 130-13=117 */
+.bush-back {
+  z-index: 8; bottom: 117px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.bush-back img { height: 30px; width: auto; }
+
+/* --- Layer 7: haze-2 --- */
+.haze-2 {
+  bottom: 120px; height: 200px;
+  z-index: 10; opacity: 0.2;
+}
+
+/* --- ground-2: mid --- */
+.ground-2 { z-index: 11; bottom: 0; height: 120px; }
+
+/* --- Layer 6: mid trees --- */
+.tree-mid {
+  z-index: 12; bottom: 108px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.tree-mid img { height: 170px; width: auto; }
+
+/* --- Layer 5: mid bushes --- */
+/* bush-mid: tree-mid bottom(108) - 10% tree-mid height(170) = 108-17=91 */
+.bush-mid {
+  z-index: 14; bottom: 91px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.bush-mid img { height: 40px; width: auto; }
+
+/* --- Layer 4: haze-1 --- */
+.haze-1 {
+  bottom: 80px; height: 200px;
+  z-index: 16; opacity: 0.1;
+}
+
+/* --- ground-1: front (widest gap) --- */
+.ground-1 { z-index: 17; bottom: 0; height: 80px; }
+
+/* --- Layer 3: character + game items --- */
+/* Character z-index: 18 */
+
+/* --- Layer 2: front trees --- */
+.tree-front {
+  z-index: 20; bottom: 27px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.tree-front img { height: 220px; width: auto; }
+
+/* --- Layer 1: front bushes (closest) --- */
+/* bush-front: tree-front bottom(27) - 10% tree-front height(220) = 27-22=5 */
+.bush-front {
+  z-index: 22; bottom: 5px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.bush-front img { height: 50px; width: auto; }
+
+/* Coins */
+.coin-item {
+  width: 45px; height: 45px; z-index: 18;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.coin-item img {
+  width: 100%; height: 100%; object-fit: contain;
+  animation: coinSpin 1.2s linear infinite;
+}
+@keyframes coinSpin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+/* Poop */
+.poop-item {
+  width: 50px; height: 50px; z-index: 18;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.poop-item img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: grayscale(100%) sepia(30%);
+}
+
+/* Skills */
+.skill-item {
+  z-index: 18; width: 55px; height: 55px;
+  animation: scrollLeft var(--speed) linear forwards;
+}
+.skill-bubble { width: 100%; height: 100%; position: relative; }
+.skill-bubble img.bubble-bg {
+  width: 100%; height: 100%; object-fit: contain; filter: sepia(20%);
+}
+.skill-bubble img.skill-icon {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px; height: 26px;
+  filter: grayscale(100%) sepia(30%) contrast(1.2);
+}
+
+/* ══════ FOOTER ══════ */
+footer {
+  width: 100%; height: 60px; position: absolute; bottom: 0; z-index: 25;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+
+.ground {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+}
+
+.grass-line {
+  display: none;
+}
+
+.dirt {
+  flex: 1; position: relative;
+  background: #6b5a3a;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(0,0,0,0.02) 4px, rgba(0,0,0,0.02) 5px),
+    repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,0.015) 4px, rgba(0,0,0,0.015) 5px);
+}
+
+.skills-row {
+  position: absolute; bottom: 30px; left: 10px;
+  display: flex; gap: 4px;
+}
+.skills-row img {
+  width: 20px; height: 20px;
+  filter: grayscale(100%) sepia(30%) contrast(1.2); opacity: 0.7;
+}
+
+.footer-bar {
+  background: var(--ink); padding: 6px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bar a {
+  color: var(--rule); text-decoration: none; font-size: 13px;
+  letter-spacing: 1px; text-transform: uppercase;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.footer-bar a:hover { color: var(--paper); }
+.footer-powered {
+  font-size: 12px; color: var(--ink-faint);
+  letter-spacing: 1px; text-transform: uppercase;
+}
+
+/* ══════ POPUPS ══════ */
+.popup-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(26,26,24,0.55); z-index: 100;
+  justify-content: center; align-items: flex-start;
+  padding: 60px 20px; overflow-y: auto; backdrop-filter: blur(2px);
+}
+.popup-overlay.active { display: flex; }
+
+.popup-page {
+  background: var(--paper); max-width: 620px; width: 100%;
+  border: 1px solid var(--rule);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  animation: popIn 0.25s ease-out; position: relative;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.popup-header {
+  background: var(--ink); color: var(--paper); text-align: center;
+  padding: 14px 20px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900; font-size: 22px;
+  border-bottom: 3px double var(--rule);
+}
+
+.popup-close {
+  position: absolute; top: 10px; right: 14px;
+  font-size: 20px; cursor: pointer; color: var(--ink-faint);
+  background: none; border: none; z-index: 2;
+}
+.popup-close:hover { color: var(--paper); }
+
+.popup-body {
+  padding: 24px 28px; font-size: 14px; line-height: 1.7; color: var(--ink-light);
+}
+.popup-body p { margin-bottom: 8px; }
+.popup-body hr { border: none; border-top: 1px solid var(--rule-light); margin: 12px 0; }
+
+.nick-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; justify-content: center; }
+.nick-input {
+  font-family: 'Playfair Display', Georgia, serif; font-size: 16px;
+  padding: 6px 12px; border: 1px solid var(--rule); background: #fff;
+  color: var(--ink); outline: none; width: 200px;
+}
+.nick-input:focus { border-color: var(--ink); }
+.nick-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.nick-ok {
+  font-family: 'Playfair Display', Georgia, serif; font-weight: 700;
+  font-size: 14px; padding: 6px 16px; background: var(--ink); color: var(--paper);
+  border: none; cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
+}
+.nick-ok:hover { background: var(--ink-light); }
+
+.controls-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; }
+.controls-label { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+.controls-img { height: 40px; filter: sepia(30%); }
+
+.rating-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rating-table th { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; text-align: left; padding: 6px 8px; border-bottom: 2px solid var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.rating-table td { padding: 6px 8px; border-bottom: 1px solid var(--rule-light); }
+.rating-table tr:last-child td { border-bottom: none; }
+.rating-table .place-1 { background: rgba(184,134,11,0.12); }
+.rating-table .place-2 { background: rgba(200,192,180,0.2); }
+.rating-table .place-3 { background: rgba(180,130,80,0.12); }
+.rating-table .place-icon { width: 18px; height: 18px; vertical-align: middle; }
+.rating-table .col-place { text-align: center; width: 40px; }
+.rating-table .col-money, .rating-table .col-skills { text-align: center; }
+.rating-table .is-you { font-weight: 700; color: var(--accent-red); }
+.popup-footer { text-align: center; padding: 8px; border-top: 2px double var(--ink); font-size: 14px; color: var(--rule); letter-spacing: 6px; }
+
+/* ══════ RESPONSIVE — MOBILE ══════ */
+@media (max-width: 768px) {
+  /* Header */
+  .masthead { margin: 0; }
+  .masthead h1 { font-size: 24px; }
+  .dateline { padding: 2px 10px; font-size: 9px; letter-spacing: 1px; }
+  .quote-bar { padding: 5px 55px; font-size: 15px; min-height: 32px; }
+
+  /* Nav — smaller, below header */
+  .nav-left, .nav-right { top: 62px; }
+  .nav-left { left: 4px; } .nav-right { right: 4px; }
+  .nav-btn { width: 54px; height: 54px; padding: 10px; }
+
+  /* Footer shorter */
+  footer { height: 60px; }
+  .footer-bar { padding: 4px 10px; }
+  .footer-bar a { font-size: 10px; letter-spacing: 0.5px; }
+  .footer-powered { font-size: 9px; }
+
+  /* Scale down everything — use vh-relative bottom positions */
+  /* Ground layers */
+  /* Ground layers: bottom:0, height = кромка от низа.
+     Кромки компактные: g4=40vh, g3=38vh, g2=34vh, g1=28vh
+     Промежутки: 2vh, 4vh, 6vh — перспектива, тонкие слои */
+  .ground-4 { bottom: 0; height: 35vh; }
+  .ground-3 { bottom: 0; height: 33.5vh; }
+  .ground-2 { bottom: 0; height: 31vh; }
+  .ground-1 { bottom: 0; height: 27vh; }
+
+  .haze-3 { bottom: 0; height: 35vh; }
+  .haze-2 { bottom: 0; height: 33.5vh; }
+  .haze-1 { bottom: 0; height: 31vh; }
+
+  /* Правило: кусты НИЖЕ деревьев в каждой группе (offset больше) */
+
+  /* Group 4 (farthest): кромка 35vh */
+  .tree-far { bottom: calc(35vh - 10px); }
+  .tree-far img { height: 50px; }
+
+  /* Group 3: кромка 33.5vh */
+  .tree-back { bottom: calc(33.5vh - 12px); }
+  .tree-back img { height: 75px; }
+  /* bush-back: tree-back - 10% of 75px = 7.5px ≈ 8px lower */
+  .bush-back { bottom: calc(33.5vh - 20px); }
+  .bush-back img { height: 20px; }
+
+  /* Group 2: кромка 31vh */
+  .tree-mid { bottom: calc(31vh - 15px); }
+  .tree-mid img { height: 100px; }
+  /* bush-mid: tree-mid - 10% of 100px = 10px lower */
+  .bush-mid { bottom: calc(31vh - 25px); }
+  .bush-mid img { height: 25px; }
+
+  /* Group 1 (front): кромка 27vh */
+  .character { width: 70px; height: 100px; bottom: calc(27vh - 8px); }
+  .char-badge { font-size: 8px; padding: 1px 4px; }
+  .badge-grade { top: -22px; left: -8px; }
+  .badge-money { top: -8px; left: -8px; }
+  .char-badge img { width: 10px; height: 10px; }
+  .tree-front { bottom: calc(27vh - 18px); }
+  .tree-front img { height: 130px; }
+  /* bush-front: tree-front - 10% of 130px = 13px lower */
+  .bush-front { bottom: calc(27vh - 31px); }
+  .bush-front img { height: 35px; }
+
+  /* Clouds */
+  .cloud-far img { width: 40px; }
+  .cloud-mid img { width: 55px; }
+  .cloud-near img { width: 70px; }
+
+  /* Items */
+  .coin-item { width: 30px; height: 30px; }
+  .poop-item { width: 30px; height: 30px; }
+  .skill-item { width: 35px; height: 35px; }
+  .skill-bubble img.skill-icon { width: 16px; height: 16px; }
+
+  /* Popups */
+  .popup-overlay { padding: 20px 8px; }
+  .popup-header { font-size: 16px; padding: 10px 14px; }
+  .popup-body { padding: 12px 14px; font-size: 12px; }
+  .nick-input { width: 140px; font-size: 13px; }
+  .rating-table { font-size: 11px; }
+  .rating-table th { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<div class="game" tabindex="0" id="game">
+  <header>
+    <div class="masthead">
+      <div class="masthead-logo">
+        <img src="sprites/logo.png" alt="logo" width="36" height="28" style="filter: sepia(20%) contrast(1.1);">
+      </div>
+      <h1>Be My Slave<span class="dot">,</span> Darlin<span class="dot">'</span></h1>
+    </div>
+    <div class="dateline">
+      <span>Zen Programmer's Gazette</span>
+      <span>Est. 2007 &bull; Edition of 2026</span>
+      <span>PHP &bull; Symfony &bull; Vue</span>
+    </div>
+    <div class="quote-bar" id="quoteBar"></div>
+  </header>
+
+  <div class="nav-left">
+    <button class="nav-btn" title="Top 10" onclick="openPopup('rating')"><img src="sprites/cup.png" alt="Rating"></button>
+    <button class="nav-btn" title="How to play" onclick="openPopup('info')"><img src="sprites/info.png" alt="Info"></button>
+    <button class="nav-btn" title="Sound" onclick="toggleSound()"><img src="sprites/sond_on.png" alt="Sound" id="soundImg"></button>
+    <button class="nav-btn" title="Reset" onclick="resetData()"><img src="sprites/refresh_dark.png" alt="Reset"></button>
+  </div>
+
+  <div class="nav-right">
+    <a class="nav-btn" href="https://t.me/BeMySlaveDarlin" target="_blank"><img src="sprites/telegram.png" alt="Telegram"></a>
+    <a class="nav-btn" href="https://github.com/BeMySlaveDarlin" target="_blank"><img src="sprites/github.png" alt="GitHub"></a>
+    <a class="nav-btn" href="mailto:bemyslavedarlin@gmail.com"><img src="sprites/mail.png" alt="Email"></a>
+    <button class="nav-btn" title="About me" onclick="openPopup('about')"><img src="sprites/question.png" alt="About"></button>
+  </div>
+
+  <main id="gameArea">
+    <!-- Diorama layers: hazes + ground fills -->
+    <div class="ground-fill ground-4"></div>
+    <div class="haze haze-3"></div>
+    <div class="ground-fill ground-3"></div>
+    <div class="haze haze-2"></div>
+    <div class="ground-fill ground-2"></div>
+    <div class="haze haze-1"></div>
+    <div class="ground-fill ground-1"></div>
+
+    <!-- Layer 3: character + game items -->
+    <div class="character" id="character">
+      <div class="char-badge badge-grade"><img src="sprites/medal.png" alt=""><span id="gradeText">Junior</span></div>
+      <div class="char-badge badge-money"><img src="sprites/coin.png" alt="" style="width:14px;height:14px"><span id="moneyText">0</span></div>
+      <img src="sprites/char.png" alt="Character" id="charImg">
+    </div>
+  </main>
+
+  <footer>
+    <div class="skills-row" id="skillsRow"></div>
+    <div class="footer-bar">
+      <a href="https://github.com/BeMySlaveDarlin/bemyslavedarlin">BeMySlaveDarlin &copy; 2007&ndash;2026</a>
+      <div class="footer-powered">Powered by: PHP &bull; Symfony &bull; Vue</div>
+    </div>
+  </footer>
+</div>
+
+<!-- POPUPS -->
+<div class="popup-overlay" id="popup-rating" onclick="closePopup(event)">
+  <div class="popup-page" onclick="event.stopPropagation()">
+    <div class="popup-header">&#167; Top 10</div>
+    <button class="popup-close" onclick="closeAllPopups()">&times;</button>
+    <div class="popup-body">
+      <table class="rating-table">
+        <thead><tr><th class="col-place">#</th><th>Nickname</th><th>Grade</th><th class="col-money">Balance</th><th class="col-skills">Skills</th></tr></thead>
+        <tbody>
+          <tr class="place-1"><td class="col-place"><img src="sprites/first_place.png" class="place-icon"></td><td class="is-you">BeMySlaveDarlin (You)</td><td>Senior</td><td class="col-money">15.2k</td><td class="col-skills">12</td></tr>
+          <tr class="place-2"><td class="col-place"><img src="sprites/second_place.png" class="place-icon"></td><td>Player_42</td><td>Middle</td><td class="col-money">8.7k</td><td class="col-skills">7</td></tr>
+          <tr class="place-3"><td class="col-place"><img src="sprites/third_place.png" class="place-icon"></td><td>Player_13</td><td>Junior+</td><td class="col-money">4.1k</td><td class="col-skills">4</td></tr>
+          <tr><td class="col-place">4</td><td>Player_7</td><td>Junior</td><td class="col-money">1.2k</td><td class="col-skills">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popup-footer">&bull; &bull; &bull; &bull; &bull;</div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="popup-info" onclick="closePopup(event)">
+  <div class="popup-page" onclick="event.stopPropagation()">
+    <div class="popup-header">Rules of the Game</div>
+    <button class="popup-close" onclick="closeAllPopups()">&times;</button>
+    <div class="popup-body">
+      <div class="nick-row">
+        <input class="nick-input" placeholder="Enter nickname" maxlength="20" minlength="3" id="nickInput">
+        <button class="nick-ok" onclick="setNick()">OK</button>
+      </div>
+      <div class="controls-row"><span class="controls-label">Controls</span><img src="sprites/space.png" class="controls-img" alt="Controls"></div>
+      <hr>
+      <p>Jump to dodge 💩 and catch 🟡</p><p>Click or tap anywhere on the screen</p>
+      <p>Collect skills to increase coin income</p><p>Each 🟡 grants 100–500 💵</p>
+      <p>Each 💩 deducts 500–1000 💵</p><p>Each 💩 removes one random skill</p>
+    </div>
+    <div class="popup-footer">&bull; &bull; &bull; &bull; &bull;</div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="popup-about" onclick="closePopup(event)">
+  <div class="popup-page" onclick="event.stopPropagation()">
+    <div class="popup-header">About the Author</div>
+    <button class="popup-close" onclick="closeAllPopups()">&times;</button>
+    <div class="popup-body">
+      <p><b>I am a zen programmer*.</b></p>
+      <p>Can ship to production in a heartbeat, can philosophize about clean code and wrap abstractions for weeks.</p><hr>
+      <p>PHP, Go, Python, Java, C#. PHP — excellent. The rest — mediocre.</p>
+      <p>JavaScript — for double the price.</p><hr>
+      <p>Sometimes DevOps, but reluctantly.</p>
+      <p>Linux, Windows — yes. macOS — almost, but for triple the price.</p><hr>
+      <p>Work from home: armchair, sofa, bed, toilet.</p>
+      <p>If not at home — for double the price.</p><hr>
+      <p style="color:var(--ink-faint);font-size:12px;font-style:italic;">* — colloquially: a person of profound indifference</p>
+    </div>
+    <div class="popup-footer">&bull; &bull; &bull; &bull; &bull;</div>
+  </div>
+</div>
+
+<script>
+const skillIcons = ['symfony','php','docker','nginx','kubernetes','git','vue','redis','postgresql','mysql','laravel','aws','graphql','composer','phpunit','solid','oop','ddd','cqrs','cicd','jquery','js','css','html','elasticsearch','memcached','rabbit-mq','kafka','microservices','github','gitlab','yii','grpc'];
+const spriteLists = {
+  clouds: ['cloud1','cloud2','cloud3','cloud4','cloud5','cloud6','cloud7','cloud8','cloud9','cloud10'],
+  trees: ['tree2','tree3','tree4','tree5','tree6','tree7'],
+  bushes: ['bush1','bush2','bush3','bush4','bush5','bush6','bush7','bush8','bush9','bush10','bush11']
+};
+
+function rnd(a,b) { return a + Math.random()*(b-a); }
+function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+function spawn(className, imgSrc, speed, bottom, extraStyle) {
+  const area = document.getElementById('gameArea');
+  const el = document.createElement('div');
+  el.className = className;
+  el.style.setProperty('--speed', speed + 's');
+  if (bottom !== null) el.style.bottom = bottom + 'px';
+  if (extraStyle) Object.assign(el.style, extraStyle);
+  if (typeof imgSrc === 'string') {
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    el.appendChild(img);
+  } else {
+    el.appendChild(imgSrc);
+  }
+  area.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+function spawnCloudFar() {
+  const top = isMobile() ? rnd(15,30)+'vh' : rnd(100,200)+'px';
+  spawn('scroll-item cloud-far', 'sprites/'+pick(spriteLists.clouds)+'.png', rnd(35,50), null, {top});
+}
+function spawnCloudMid() {
+  const top = isMobile() ? rnd(8,20)+'vh' : rnd(50,140)+'px';
+  spawn('scroll-item cloud-mid', 'sprites/'+pick(spriteLists.clouds)+'.png', rnd(25,38), null, {top});
+}
+function spawnCloudNear() {
+  const top = isMobile() ? rnd(3,12)+'vh' : rnd(10,80)+'px';
+  spawn('scroll-item cloud-near', 'sprites/'+pick(spriteLists.clouds)+'.png', rnd(18,28), null, {top});
+}
+
+// Layer speeds: same speed for trees+bushes on same ground level
+// Far: 36s, Back: 28s, Mid: 20s, Front: 14s
+function spawnTreeFar()   { spawn('scroll-item tree-far',   'sprites/'+pick(spriteLists.trees)+'.png',   36, null); }
+function spawnTreeBack()  { spawn('scroll-item tree-back',  'sprites/'+pick(spriteLists.trees)+'.png',   28, null); }
+function spawnBushBack()  { spawn('scroll-item bush-back',  'sprites/'+pick(spriteLists.bushes)+'.png',  28, null); }
+function spawnTreeMid()   { spawn('scroll-item tree-mid',   'sprites/'+pick(spriteLists.trees)+'.png',   20, null); }
+function spawnBushMid()   { spawn('scroll-item bush-mid',   'sprites/'+pick(spriteLists.bushes)+'.png',  20, null); }
+function spawnTreeFront() { spawn('scroll-item tree-front', 'sprites/'+pick(spriteLists.trees)+'.png',   14, null); }
+function spawnBushFront() { spawn('scroll-item bush-front', 'sprites/'+pick(spriteLists.bushes)+'.png',  14, null); }
+
+function spawnCoin() {
+  const coinBottom = isMobile() ? rnd(window.innerHeight*0.36, window.innerHeight*0.55) : rnd(120,300);
+  spawn('scroll-item coin-item', 'sprites/coin.png', rnd(13,18), coinBottom);
+}
+
+function spawnPoop() {
+  const img = document.createElement('img');
+  img.src = 'assets/images/items/poop.gif';
+  const poopBottom = isMobile() ? rnd(window.innerHeight*0.27, window.innerHeight*0.32) : rnd(40,80);
+  spawn('scroll-item poop-item', img, rnd(11,16), poopBottom);
+}
+
+function spawnSkill() {
+  const wrap = document.createElement('div');
+  wrap.className = 'skill-bubble';
+  const bg = document.createElement('img');
+  bg.className = 'bubble-bg';
+  bg.src = 'sprites/bubble.png';
+  const icon = document.createElement('img');
+  icon.className = 'skill-icon';
+  icon.src = 'assets/images/items/skills/items/' + pick(skillIcons) + '.webp';
+  wrap.appendChild(bg);
+  wrap.appendChild(icon);
+  const skillBottom = isMobile() ? rnd(window.innerHeight*0.40, window.innerHeight*0.60) : rnd(150,350);
+  spawn('scroll-item skill-item', wrap, rnd(16,24), skillBottom);
+}
+
+// Intervals
+setInterval(spawnCloudFar, rnd(6000,12000));
+setInterval(spawnCloudMid, rnd(5000,9000));
+setInterval(spawnCloudNear, rnd(5000,10000));
+setInterval(spawnTreeFar, rnd(5000,9000));
+setInterval(spawnTreeBack, rnd(4000,7000));
+setInterval(spawnTreeMid, rnd(3000,6000));
+setInterval(spawnTreeFront, rnd(4000,7000));
+setInterval(spawnBushBack, rnd(4000,7000));
+setInterval(spawnBushMid, rnd(3000,5500));
+setInterval(spawnBushFront, rnd(3500,6000));
+setInterval(spawnCoin, rnd(5000,10000));
+setInterval(spawnPoop, rnd(6000,14000));
+setInterval(spawnSkill, rnd(5000,12000));
+
+// Initial scene
+setTimeout(spawnCloudFar, 100); setTimeout(spawnCloudMid, 400); setTimeout(spawnCloudNear, 700);
+for(let i=0;i<2;i++) setTimeout(spawnTreeFar, i*400);
+for(let i=0;i<3;i++) setTimeout(spawnTreeBack, i*300+100);
+for(let i=0;i<2;i++) setTimeout(spawnTreeMid, i*400+200);
+for(let i=0;i<2;i++) setTimeout(spawnBushBack, i*500+100);
+setTimeout(spawnBushMid, 300); setTimeout(spawnBushMid, 700);
+setTimeout(spawnBushFront, 400);
+setTimeout(spawnTreeFront, 600);
+setTimeout(spawnCoin, 2500);
+setTimeout(spawnSkill, 1500);
+setTimeout(spawnPoop, 4000);
+
+// Quotes
+const quotes = [
+  'php жив, как и старый баг, он спит в глубинах плохих решений.',
+  'legacy-код, запах тревоги, там в глубине require_once.',
+  'docker упал, я в отчаянии, devops сказал: ну, rm -rf.',
+  'solid, ddd, код идеален, но в проде if true return true.',
+  'если в коде /** todo **/ значит, уже никогда.',
+  'рефакторинг должен был спасти, но он всё сломал.',
+  'когда ты исправляешь баг, он исправляет тебя.',
+  'продакшен упал, но мониторинг не заметил.',
+  'починил баг — самая страшная фраза в коммите.',
+  'у нас микросервисы, но один из них делает всё.',
+];
+
+const isMobile = () => window.innerWidth <= 768;
+
+let jumping = false;
+function jump() {
+  if (jumping) return;
+  jumping = true;
+  const ch = document.getElementById('character');
+  const bar = document.getElementById('quoteBar');
+  bar.textContent = quotes[Math.floor(Math.random()*quotes.length)];
+  bar.classList.add('visible');
+  const mobile = isMobile();
+  const jumpTime = mobile ? 2.8 : 2;
+  const restBottom = mobile ? 'calc(27vh - 8px)' : '35px';
+  const charHeight = ch.offsetHeight;
+  const currentBottom = parseInt(getComputedStyle(ch).bottom) || 0;
+  const jumpTarget = (currentBottom + charHeight * 2) + 'px';
+
+  ch.style.transition = 'bottom ' + jumpTime + 's ease';
+  ch.style.bottom = jumpTarget;
+
+  setTimeout(() => {
+    ch.style.transition = 'bottom ' + jumpTime + 's ease';
+    ch.style.bottom = restBottom;
+
+    setTimeout(() => { bar.classList.remove('visible'); }, jumpTime * 3000);
+    setTimeout(() => {
+      ch.style.transition = '';
+      jumping = false;
+    }, jumpTime * 1000);
+  }, jumpTime * 700);
+}
+
+document.getElementById('game').addEventListener('click', e => {
+  if (e.target.closest('.nav-left')||e.target.closest('.nav-right')||e.target.closest('.popup-overlay')) return;
+  jump();
+});
+document.getElementById('game').addEventListener('touchend', e => {
+  if (e.target.closest('.nav-left')||e.target.closest('.nav-right')||e.target.closest('.popup-overlay')) return;
+  jump();
+});
+document.getElementById('game').addEventListener('keydown', e => {
+  if (e.code==='Space') { e.preventDefault(); jump(); }
+});
+
+function openPopup(n) { closeAllPopups(); document.getElementById('popup-'+n).classList.add('active'); }
+function closeAllPopups() { document.querySelectorAll('.popup-overlay').forEach(p=>p.classList.remove('active')); }
+function closePopup(e) { if(e.target.classList.contains('popup-overlay')) closeAllPopups(); }
+function setNick() { const v=document.getElementById('nickInput').value.trim(); if(v.length>=3) alert('Nickname: '+v); }
+function toggleSound() { const i=document.getElementById('soundImg'); i.src=i.src.includes('sond_on')?'sprites/sound_off.png':'sprites/sond_on.png'; }
+function resetData() { location.reload(); }
+document.getElementById('game').focus();
+</script>
+</body>
+</html>

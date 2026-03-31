@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CC-Task-Manager — Claude Code Task Lifecycle Plugin</title>
+<link rel="stylesheet" href="cc-plugin.css">
+</head>
+<body>
+
+<div class="page" style="position: relative;">
+
+  <!-- ═══ GITHUB CORNER ═══ -->
+  <div class="github-corner">
+    <a href="https://github.com/BeMySlaveDarlin/cc-task-manager" target="_blank" rel="noopener" title="View on GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+  </div>
+
+  <!-- ═══ MASTHEAD ═══ -->
+  <header class="masthead">
+    <hr class="masthead-rule">
+    <h1>Claude Code Task Manager</h1>
+    <div class="subtitle">Task lifecycle management for Claude Code projects</div>
+  </header>
+
+  <div class="dateline">
+    <span>Works with any project</span>
+    <span>Edition of March 2026</span>
+    <span>Claude Code &bull; cc-task-manager</span>
+  </div>
+
+  <!-- ═══ TAGLINE ═══ -->
+  <div style="text-align: center; padding: 14px 0; margin-bottom: 20px; border-bottom: 1px solid var(--rule); font-style: italic; color: var(--ink-light); font-size: 15px;">
+    Track tasks, finalize sessions, resume context &mdash; all through natural language.
+  </div>
+
+  <!-- ═══ STATS BANNER ═══ -->
+  <div class="legend" style="justify-content: center; gap: 40px; padding: 16px 0; border-bottom: 1px solid var(--rule-light);">
+    <div style="text-align: center;">
+      <div style="font-size: 28px; font-weight: 700; color: var(--ink); font-family: var(--font-serif);">3</div>
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light);">Skills</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 28px; font-weight: 700; color: var(--ink); font-family: var(--font-serif);">4</div>
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light);">Commands</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 28px; font-weight: 700; color: var(--ink); font-family: var(--font-serif);">&infin;</div>
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light);">Tasks</div>
+    </div>
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ TWO COLUMNS: Skills + Commands ═══ -->
+  <div class="columns">
+
+    <!-- ── LEFT: Skills ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&dagger;</div>
+          <h2>Skills</h2>
+        </div>
+        <p class="section-desc">Auto-activating workflows. Triggered by natural language or explicit commands.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname">ts/</span> <span class="fdesc">CRUD router for project tasks</span></li>
+          <li><span class="fname">finalize/</span> <span class="fdesc">session finalization &amp; reporting</span></li>
+          <li><span class="fname">rs/</span> <span class="fdesc">context restoration from previous session</span></li>
+        </ul>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> skills activate automatically when you say things like <code style="font-size: 11px; background: var(--tag-bg); padding: 1px 4px; border-radius: 2px;">&lsquo;&lsquo;создай задачу&rsquo;&rsquo;</code>, <code style="font-size: 11px; background: var(--tag-bg); padding: 1px 4px; border-radius: 2px;">&lsquo;&lsquo;финализируй&rsquo;&rsquo;</code>, or <code style="font-size: 11px; background: var(--tag-bg); padding: 1px 4px; border-radius: 2px;">&lsquo;&lsquo;продолжим&rsquo;&rsquo;</code>. No commands needed.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Commands ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&Dagger;</div>
+          <h2>Commands</h2>
+        </div>
+        <p class="section-desc">Explicit entry points. Slash commands that invoke skills directly.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname">/ts</span> <span class="fdesc">create, list, show, close, delete tasks</span></li>
+          <li><span class="fname">/finalize</span> <span class="fdesc">finalize session, sync tasks</span></li>
+          <li><span class="fname">/fin</span> <span class="fdesc">alias for /finalize</span></li>
+          <li><span class="fname">/rs</span> <span class="fdesc">restore session context</span></li>
+        </ul>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> commands are shortcuts. The same skills activate automatically from natural language &mdash; commands just make it explicit.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ STORAGE FORMAT (full-width) ═══ -->
+  <div class="section full-width">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#9670;</div>
+      <h2>Storage</h2>
+      <span class="count">.claude/session/</span>
+    </div>
+    <p class="section-desc">YAML frontmatter + markdown. Human-readable, machine-parseable.</p>
+
+    <div class="columns" style="margin-top: 16px; gap: 24px;">
+      <div class="col">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); margin-bottom: 8px;">Task file format</div>
+        <pre style="margin: 0; background: #1a1a1a; color: #d4cfbf; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; padding: 16px; border-radius: 4px; line-height: 1.6; overflow-x: auto;">---
+id: 7
+status: open
+priority: HIGH
+created: 2026-03-31
+blockedBy: []
+tags: [auth, security]
+---
+
+# Refactor auth middleware
+
+## Problem
+Current implementation stores tokens...</pre>
+      </div>
+      <div class="col">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); margin-bottom: 8px;">Index format (tasks.md)</div>
+        <pre style="margin: 0; background: #1a1a1a; color: #d4cfbf; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; padding: 16px; border-radius: 4px; line-height: 1.6; overflow-x: auto;"># Task Registry
+
+Last updated: 2026-03-31
+
+## Open
+| # | Task | Priority | Blocker |
+|---|------|----------|---------|
+| 07 | Refactor auth | HIGH | &mdash; |
+
+## Done
+| # | Task | Date |
+|---|------|------|
+| 06 | Fix login bug | 2026-03-30 |</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ REQUEST FLOW ═══ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#8594;</div>
+      <h2>Request Flow</h2>
+    </div>
+    <p class="section-desc">Every task-related request is matched, classified, and executed against the session store.</p>
+
+    <div class="flow-timeline">
+      <div class="flow-step">
+        <div class="flow-num">I</div>
+        <div class="flow-step-title">User says</div>
+        <div class="flow-step-desc">&ldquo;создай задачу&rdquo; or /ts</div>
+      </div>
+      <div class="flow-step active">
+        <div class="flow-num">II</div>
+        <div class="flow-step-title">Skill Match</div>
+        <div class="flow-step-desc">auto-activate by description</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">III</div>
+        <div class="flow-step-title">Operation</div>
+        <div class="flow-step-desc">classify: create / list / show / close</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">IV</div>
+        <div class="flow-step-title">Execute</div>
+        <div class="flow-step-desc">read/write .claude/session/</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">V</div>
+        <div class="flow-step-title">Response</div>
+        <div class="flow-step-desc">confirmation or task list</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ TWO COLUMNS: Task Lifecycle + Customization ═══ -->
+  <div class="columns">
+
+    <!-- ── LEFT: Task Lifecycle ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&#182;</div>
+          <h2>Task Lifecycle</h2>
+        </div>
+
+        <table class="hooks-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Trigger</th>
+              <th>Confirmation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="hook-event">Create</td>
+              <td class="hook-desc">&ldquo;создай задачу&rdquo;, &ldquo;new task&rdquo;</td>
+              <td class="hook-desc">Silent</td>
+            </tr>
+            <tr>
+              <td class="hook-event">List</td>
+              <td class="hook-desc">&ldquo;покажи задачи&rdquo;, &ldquo;что осталось&rdquo;</td>
+              <td class="hook-desc">Silent</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Show</td>
+              <td class="hook-desc">&ldquo;покажи #7&rdquo;, &ldquo;детали задачи&rdquo;</td>
+              <td class="hook-desc">Silent</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Update</td>
+              <td class="hook-desc">&ldquo;обнови приоритет&rdquo;, &ldquo;измени&rdquo;</td>
+              <td class="hook-desc">Silent</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Close</td>
+              <td class="hook-desc">&ldquo;закрой задачу&rdquo;, &ldquo;done&rdquo;</td>
+              <td class="hook-desc">AskUser</td>
+            </tr>
+            <tr>
+              <td class="hook-event">Delete</td>
+              <td class="hook-desc">&ldquo;удали задачу&rdquo;</td>
+              <td class="hook-desc">AskUser</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Customization ── -->
+    <div class="col">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon icon-section">&#8251;</div>
+          <h2>Customization</h2>
+        </div>
+        <p class="section-desc">Override and extend behaviour with local files.</p>
+
+        <ul class="tree" style="margin-top: 8px;">
+          <li><span class="fname c-gold">.claude/finalize.local.md</span> <span class="fdesc">local pre/post steps for finalize</span></li>
+          <li><span class="fname c-gold">.claude/session/tasks.md</span> <span class="fdesc">task index (auto-managed)</span></li>
+          <li><span class="fname c-gold">.claude/session/queue.md</span> <span class="fdesc">queue details</span></li>
+          <li><span class="fname c-gold">.claude/session/details/</span> <span class="fdesc">individual task files</span></li>
+        </ul>
+
+        <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
+          <strong style="color: var(--ink);">Pattern:</strong> add <code style="font-size: 11px; background: var(--tag-bg); padding: 1px 4px; border-radius: 2px;">finalize.local.md</code> to your project for custom pre/post finalization steps &mdash; commit hooks, deploy checks, notifications.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ornament">&loz; &bull; &loz; &bull; &loz;</div>
+
+  <!-- ═══ INSTALLATION ═══ -->
+  <div class="section full-width">
+    <div class="section-head">
+      <div class="section-icon icon-section">&#167;</div>
+      <h2>Installation</h2>
+    </div>
+
+    <div class="columns" style="margin-top: 16px; gap: 24px;">
+      <div class="col">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); margin-bottom: 8px;">Plugin (recommended)</div>
+        <pre style="margin: 0; background: #1a1a1a; color: #d4cfbf; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; padding: 16px; border-radius: 4px; line-height: 1.6; overflow-x: auto;">/plugin marketplace add BeMySlaveDarlin/cc-task-manager
+/plugin install cc-task-manager@bemyslavedarlin-cc-task-manager</pre>
+      </div>
+      <div class="col">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); margin-bottom: 8px;">Legacy</div>
+        <pre style="margin: 0; background: #1a1a1a; color: #d4cfbf; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; padding: 16px; border-radius: 4px; line-height: 1.6; overflow-x: auto;">git clone https://github.com/BeMySlaveDarlin/cc-task-manager.git
+cd cc-task-manager &amp;&amp; bash install.sh</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <p style="margin-bottom: 8px;">
+      <a href="https://github.com/BeMySlaveDarlin/cc-task-manager" target="_blank" rel="noopener" class="github-link">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </p>
+    <p>CC-Task-Manager &bull; Claude Code Task Lifecycle Plugin &bull; March 2026</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

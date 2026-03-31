@@ -1,25 +1,9 @@
-<script>
-import {useGlobalStore} from "@/store/index"
+<script setup>
+import { useGlobalStore } from '@/store'
 
-export default {
-  data() {
-    return {}
-  },
-  computed: {
-    player() {
-      return useGlobalStore().player
-    },
-    info() {
-      return useGlobalStore().info
-    }
-  },
-  methods: {}
-}
+const store = useGlobalStore()
 </script>
 
 <template>
-  <div class="popup-about" v-html="info.items.about.description"></div>
+  <div v-if="store.info.items?.about" v-html="store.info.items.about.description"></div>
 </template>
-
-<style scoped>
-</style>

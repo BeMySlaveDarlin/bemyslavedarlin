@@ -21,20 +21,7 @@ RUN docker-php-ext-install \
     bcmath zip xml
 
 COPY --link conf.d/app.ini $PHP_INI_DIR/conf.d/
-RUN sed -i "s/pm.max_children = 5/pm.max_children = 200/" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/pm = dynamic/pm = static/" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/pm.start_servers = 2/;pm.start_servers = 2/" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/pm.min_spare_servers = 1/;pm.min_spare_servers = 1/" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/pm.max_spare_servers = 3/;pm.max_spare_servers = 3/" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/;error_log = log\/php-fpm.log/error_log = \/var\/log\/php-fpm.log/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;emergency_restart_threshold = 0/emergency_restart_threshold = 32/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;emergency_restart_interval = 0/emergency_restart_interval = 1m/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;process_control_timeout = 0/process_control_timeout = 10s/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/; process.max = 128/process.max = 1024/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;rlimit_files = 1024/rlimit_files = 65536/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;rlimit_core = 0/rlimit_core = 0/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;pm.status_path = \/status/pm.status_path = \/status/" /usr/local/etc/php-fpm.conf \
-    && sed -i "s/;ping.path = \/ping/ping.path = \/ping/" /usr/local/etc/php-fpm.conf
+COPY --link conf.d/www.custom.conf /usr/local/etc/php-fpm.d/zz-custom.conf
 
 RUN php -r "readfile('https://getcomposer.org/installer');" |  \
     php -- --install-dir=/usr/bin/ --filename=composer --version=${COMPOSER_VERSION} \
@@ -49,6 +36,9 @@ WORKDIR /var/www/app
 
 EXPOSE $APP_PORT
 
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=30s \
+    CMD php -r "echo 'ok';" || exit 1
+
 FROM php_base AS php_dev
 
 ENV APP_ENV=dev XDEBUG_MODE=off
@@ -59,21 +49,9 @@ COPY --link conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 RUN pecl update-channels
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-RUN composer install \
-    && composer dump-autoload --classmap-authoritative \
-    && composer dump-env dev \
-    && composer run-script post-install-cmd \
-    && chmod +x bin/console; sync
-
 FROM php_base AS php_prod
 
 ENV APP_ENV=prod
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY --link conf.d/app.prod.ini $PHP_INI_DIR/conf.d/
-
-RUN composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scripts \
-    && composer dump-autoload --classmap-authoritative --no-dev \
-    && composer dump-env prod \
-    && composer run-script --no-dev post-install-cmd \
-    && chmod +x bin/console; sync

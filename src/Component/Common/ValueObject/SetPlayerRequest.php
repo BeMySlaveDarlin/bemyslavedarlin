@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Component\Common\ValueObject;
 
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SetPlayerRequest
@@ -11,6 +12,7 @@ class SetPlayerRequest
     public function __construct(
         #[NotBlank]
         public string $fingerprint,
+        #[Length(min: 3, max: 20)]
         public ?string $nick = null,
         public string $grade = 'Junior',
         public int | string $money = 0,

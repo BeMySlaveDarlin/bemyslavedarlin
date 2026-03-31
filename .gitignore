@@ -11,6 +11,9 @@
 /docker-compose.prod.yaml
 ###< docker ###
 
+.env.local
+.env.*.local
+
 ###> phpstan/phpstan ###
 phpstan.neon
 /.idea/

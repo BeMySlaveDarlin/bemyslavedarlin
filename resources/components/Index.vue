@@ -1,175 +1,118 @@
-<script>
-import {mapActions} from "pinia"
-import {useGlobalStore} from "@/store/index"
-import ButtonsLeft from "@/components/ui/ButtonsLeft.vue"
-import ButtonsRight from "@/components/ui/ButtonsRight.vue"
-import GroundItem from "@/components/scroller/items/GroundItem.vue"
-import ItemCharacter from "@/components/scroller/items/ItemCharacter.vue"
-import PopupContainer from "@/components/ui/PopupContainer.vue"
-import ScrollerCoins from "@/components/scroller/ScrollerCoins.vue"
-import ScrollerNature from "@/components/scroller/ScrollerNature.vue"
-import ScrollerPoops from "@/components/scroller/ScrollerPoops.vue"
-import ScrollerSkills from "@/components/scroller/ScrollerSkills.vue"
+<script setup>
+import { onMounted, ref, watch } from 'vue'
+import { useGlobalStore } from '@/store'
+import logoImg from '@/assets/sprites/logo.png'
+import GroundItem from '@/components/scroller/items/GroundItem.vue'
+import ItemCharacter from '@/components/scroller/items/ItemCharacter.vue'
+import ScrollerNature from '@/components/scroller/ScrollerNature.vue'
+import ScrollerCoins from '@/components/scroller/ScrollerCoins.vue'
+import ScrollerPoops from '@/components/scroller/ScrollerPoops.vue'
+import ScrollerSkills from '@/components/scroller/ScrollerSkills.vue'
+import ButtonsLeft from '@/components/ui/ButtonsLeft.vue'
+import ButtonsRight from '@/components/ui/ButtonsRight.vue'
+import PopupContainer from '@/components/ui/PopupContainer.vue'
 
-export default {
-  components: {
-    ButtonsLeft,
-    ButtonsRight,
-    GroundItem,
-    ItemCharacter,
-    PopupContainer,
-    ScrollerCoins,
-    ScrollerNature,
-    ScrollerPoops,
-    ScrollerSkills,
-  },
-  data() {
-    return {
-      bushStartTime: 2500,
-      cloudStartTime: 1100,
-      coinsStartTime: 2300,
-      poopsStartTime: 4200,
-      skillsStartTime: 1200,
-      treeSmallStartTime: 3500,
-      treeStartTime: 1500,
-    }
-  },
-  computed: {
-    player() {
-      return useGlobalStore().player
-    },
-    popups() {
-      return useGlobalStore().popups
-    },
-    conditions() {
-      return useGlobalStore().conditions
-    }
-  },
-  mounted() {
-    this.savePlayer()
-    this.fetchQuotes()
-    this.fetchInfo()
-    this.fetchContacts()
-    this.setFocus()
-  },
-  methods: {
-    ...mapActions(useGlobalStore, ['toggleJump', 'fetchContacts', 'fetchQuotes', 'fetchInfo', 'fetchRating', 'savePlayer']),
-    handlePointer(event) {
-      if (
-          event.target.closest('.popup-overlay') ||
-          event.target.closest('.buttons-container') ||
-          this.conditions.isPopupActive
-      ) {
-        return
-      }
+const store = useGlobalStore()
+const gameRef = ref(null)
 
-      this.toggleJump()
-    },
-    handleSpace() {
-      if (this.conditions.isPopupActive) return
-      this.toggleJump()
-    },
-    setFocus() {
-      if (this.conditions.isPopupActive) {
-        document.querySelector('.main-container').blur()
-      } else {
-        document.querySelector('.main-container').focus()
-      }
-    }
-  },
-  watch: {
-    'conditions.isPopupActive': function (newValue) {
-      this.setFocus()
-    }
+function handleAction(e) {
+  if (e.target.closest('.nav-left') || e.target.closest('.nav-right')) return
+  if (e.target.closest('.popup-overlay')) return
+  if (store.conditions.isPopupActive) return
+  if (store.conditions.isJumpActive) return
+  store.toggleJump()
+  showQuote()
+}
+
+function handleKeydown(e) {
+  if (e.code === 'Space') {
+    e.preventDefault()
+    if (store.conditions.isPopupActive) return
+    if (store.conditions.isJumpActive) return
+    store.toggleJump()
+    showQuote()
   }
 }
+
+function showQuote() {
+  if (!store.quotes.items.length) return
+  const idx = Math.floor(Math.random() * store.quotes.items.length)
+  store.player.quote = store.quotes.items[idx]?.description ?? store.quotes.items[idx]?.text ?? null
+}
+
+watch(() => store.conditions.isPopupActive, () => {
+  if (!store.conditions.isPopupActive) gameRef.value?.focus()
+})
+
+onMounted(() => {
+  store.conditions.isJumpActive = false
+  store.conditions.isIntersectingPoop = false
+  store.conditions.isIntersectingMoney = false
+  store.conditions.isIntersectingSkill = false
+  store.conditions.isPopupActive = false
+  store.popups.about = false
+  store.popups.gameInfo = false
+  store.popups.rating = false
+  store.player.quote = null
+  gameRef.value?.focus()
+  store.savePlayer()
+  store.fetchQuotes()
+  store.fetchInfo()
+  store.fetchContacts()
+})
 </script>
 
 <template>
   <div
-      class="main-container"
-      @click="handlePointer"
-      @keydown.space="handleSpace"
-      @touchend="handlePointer"
-      @touchcancel="handlePointer"
-      @blur="setFocus"
-      tabindex="0"
+    ref="gameRef"
+    class="game"
+    tabindex="0"
+    @click="handleAction"
+    @touchend.prevent="handleAction"
+    @keydown="handleKeydown"
   >
-    <PopupContainer v-if="conditions.isPopupActive"/>
     <header>
-      <div v-if="player.quote !== null" class="quote-container">
-        {{ player.quote.text }}
+      <div class="masthead">
+        <div class="masthead-logo">
+          <img :src="logoImg" alt="logo" width="36" height="28" style="filter: sepia(20%) contrast(1.1)">
+        </div>
+        <h1>Be My Slave<span class="dot">,</span> Darlin<span class="dot">'</span></h1>
       </div>
-      <ButtonsLeft/>
-      <ButtonsRight/>
-      <ScrollerNature itemType="cloud" :start="cloudStartTime" :isBottom="false"/>
+      <div class="dateline">
+        <span>Zen Programmer's Gazette</span>
+        <span>Est. 2007 &bull; Edition of 2026</span>
+        <span>PHP &bull; Symfony &bull; Vue</span>
+      </div>
+      <div class="quote-bar" :class="{ visible: store.player.quote }">
+        {{ store.player.quote }}
+      </div>
     </header>
-    <main>
-      <ScrollerNature itemType="tree" :start="treeStartTime"/>
-      <ScrollerNature itemType="bush" :start="bushStartTime"/>
-      <ItemCharacter/>
-      <ScrollerCoins :start="coinsStartTime"/>
-      <ScrollerPoops :start="poopsStartTime"/>
-      <ScrollerSkills :start="skillsStartTime"/>
-      <ScrollerNature itemType="bush" :start="bushStartTime"/>
-      <ScrollerNature itemType="tree-small" :start="treeSmallStartTime"/>
+
+    <ButtonsLeft />
+    <ButtonsRight />
+
+    <main id="gameArea">
+      <GroundItem />
+
+      <ScrollerNature layer-type="cloud-far" />
+      <ScrollerNature layer-type="cloud-mid" />
+      <ScrollerNature layer-type="cloud-near" />
+
+      <ScrollerNature layer-type="tree-far" />
+      <ScrollerNature layer-type="tree-back" />
+      <ScrollerNature layer-type="tree-mid" />
+      <ScrollerNature layer-type="tree-front" />
+
+      <ScrollerNature layer-type="bush-back" />
+      <ScrollerNature layer-type="bush-mid" />
+      <ScrollerNature layer-type="bush-front" />
+
+      <ItemCharacter />
+      <ScrollerCoins />
+      <ScrollerPoops />
+      <ScrollerSkills />
     </main>
-    <footer>
-      <GroundItem/>
-    </footer>
+
+    <PopupContainer />
   </div>
 </template>
-
-<style scoped>
-.main-container {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  overflow: hidden;
-  outline: none;
-}
-
-.quote-container {
-  width: auto;
-  height: auto;
-  display: inline-block;
-  position: relative;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: pre-line;
-  text-align: justify;
-  z-index: 10;
-  background-color: azure;
-  font-size: 1.5rem;
-  border-left: 4px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  font-style: italic;
-  padding: 20px 20px 20px 40px;
-}
-
-.quote-container::before {
-  content: "“";
-  font-size: 3rem;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  color: #ccc;
-}
-
-.quote-container::after {
-  content: "”";
-  font-size: 3rem;
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  color: #ccc;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .quote-container {
-    font-size: 2rem;
-  }
-}
-</style>

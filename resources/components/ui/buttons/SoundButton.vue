@@ -1,54 +1,15 @@
-<script>
-import {mapActions} from "pinia"
-import {useGlobalStore} from "@/store/index"
-import soundOn from "@/assets/images/ui/buttons/sound-on.webp"
-import soundOff from "@/assets/images/ui/buttons/sound-off.webp"
+<script setup>
+import { computed } from 'vue'
+import { useGlobalStore } from '@/store'
+import soundOnIcon from '@/assets/sprites/sond_on.png'
+import soundOffIcon from '@/assets/sprites/sound_off.png'
 
-export default {
-  data() {
-    return {
-      soundOn,
-      soundOff,
-    }
-  },
-  computed: {
-    conditions() {
-      return useGlobalStore().conditions
-    }
-  },
-  methods: {
-    ...mapActions(useGlobalStore, ['toggleSound'])
-  }
-}
+const store = useGlobalStore()
+const icon = computed(() => store.conditions.isSoundEnabled ? soundOnIcon : soundOffIcon)
 </script>
 
 <template>
-  <button @click="toggleSound" class="sound-button">
-    <img :src="conditions.isSoundEnabled ? soundOn : soundOff" alt="Sound Toggle"/>
+  <button class="nav-btn" title="Sound" @click.stop="store.toggleSound()">
+    <img :src="icon" alt="Sound">
   </button>
 </template>
-
-<style scoped>
-.sound-button {
-  display: inline-block;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  position: relative;
-  width: 48px;
-  height: 48px;
-}
-
-.sound-button img {
-  width: 100%;
-  height: 100%;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .sound-button {
-    width: 96px;
-    height: 96px;
-  }
-}
-</style>

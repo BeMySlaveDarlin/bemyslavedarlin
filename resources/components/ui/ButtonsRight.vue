@@ -1,35 +1,34 @@
-<script>
-import {useGlobalStore} from "@/store/index"
-import ContactButton from "@/components/ui/buttons/ContactButton.vue"
-import AboutButton from "@/components/ui/buttons/AboutButton.vue"
+<script setup>
+import { computed } from 'vue'
+import { useGlobalStore } from '@/store'
+import ContactButton from '@/components/ui/buttons/ContactButton.vue'
+import AboutButton from '@/components/ui/buttons/AboutButton.vue'
 
-export default {
-  components: {ContactButton, AboutButton},
-  computed: {
-    contacts() {
-      return useGlobalStore().contacts
-    }
-  }
-}
+import telegramIcon from '@/assets/sprites/telegram.png'
+import githubIcon from '@/assets/sprites/github.png'
+import gmailIcon from '@/assets/sprites/mail.png'
+
+const store = useGlobalStore()
+
+const contactIcons = { telegram: telegramIcon, github: githubIcon, gmail: gmailIcon }
+
+const contactList = computed(() =>
+  store.contacts.items.map(c => ({
+    ...c,
+    iconSrc: contactIcons[c.type] || telegramIcon,
+  }))
+)
 </script>
 
 <template>
-  <div class="buttons-container">
-    <ContactButton :contact="contact" v-for="contact in contacts.items" :key="contact.type"/>
-    <AboutButton/>
+  <div class="nav-right">
+    <ContactButton
+      v-for="contact in contactList"
+      :key="contact.type"
+      :href="contact.contact"
+      :icon-src="contact.iconSrc"
+      :label="contact.type"
+    />
+    <AboutButton />
   </div>
 </template>
-
-<style scoped>
-.buttons-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding-right: 10px;
-  padding-top: 10px;
-  z-index: 10;
-}
-</style>

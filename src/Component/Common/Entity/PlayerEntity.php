@@ -57,11 +57,11 @@ class PlayerEntity implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'fingerprint' => $this->token,
             'nick' => $this->nickname,
             'grade' => $this->grade,
             'money' => $this->money,
             'skills' => $this->skills,
+            'is_current' => false,
         ];
     }
 

@@ -1,70 +1,51 @@
-<script>
-import {useGlobalStore} from "@/store/index"
-import ItemPoop from "@/components/scroller/items/ItemPoop.vue"
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import ItemPoop from '@/components/scroller/items/ItemPoop.vue'
 
-export default {
-  components: {ItemPoop},
-  props: {
-    start: {
-      type: Number,
-      required: true
-    }
-  },
-  data() {
-    return {
-      itemsList: [],
-      removeTimeouts: {},
-      itemId: 1,
-    }
-  },
-  mounted() {
-    this.createRandomScrollInterval()
-  },
-  computed: {
-    conditions() {
-      return useGlobalStore().conditions
-    }
-  },
-  methods: {
-    createRandomScrollInterval() {
-      const addItem = () => {
-        this.itemsList.push({id: this.itemId, value: 1})
-        this.scheduleRemoval(this.itemId)
+const items = ref([])
+let nextId = 0
+let spawnTimer = null
+let isHidden = false
 
-        setTimeout(addItem, Math.floor((Math.random() * 10 + 5) * 2100))
-        this.itemId++
-      }
+function rnd(min, max) { return min + Math.random() * (max - min) }
+function isMobile() { return window.innerWidth <= 768 }
 
-      setTimeout(addItem, this.start)
-    },
-    scheduleRemoval(itemId) {
-      this.removeTimeouts[itemId] = setTimeout(() => {
-        const indexToRemove = this.itemsList.findIndex(item => item.id === itemId)
-        if (indexToRemove !== -1) {
-          this.itemsList.splice(indexToRemove, 1)
-          delete this.removeTimeouts[itemId]
-        }
-      }, 20000)
-    }
-  },
-  watch: {
-    'conditions.isIntersectingPoop'(newValue) {
-      if (newValue === true) {
-        this.itemsList = []
-      }
-    }
-  }
+function spawnItem() {
+  const mobile = isMobile()
+  const bottom = mobile
+    ? rnd(window.innerHeight * 0.27, window.innerHeight * 0.32)
+    : rnd(35, 45)
+  items.value.push({ id: nextId++, speed: rnd(11, 16), bottom })
+  scheduleNext()
 }
+
+function scheduleNext() {
+  if (isHidden) return
+  spawnTimer = setTimeout(spawnItem, Math.floor((rnd(5, 15)) * 2100))
+}
+
+function removeItem(id) {
+  const idx = items.value.findIndex(i => i.id === id)
+  if (idx !== -1) items.value.splice(idx, 1)
+}
+
+function onVisibilityChange() {
+  isHidden = document.hidden
+  if (isHidden) { clearTimeout(spawnTimer) }
+  else { items.value = []; scheduleNext() }
+}
+
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  setTimeout(spawnItem, 4000)
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(spawnTimer)
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+})
 </script>
 
 <template>
-  <div class="poops">
-    <template v-for="item in itemsList" :key="item.id">
-      <ItemPoop
-          ref="poop"
-          :imageNumber="item.value"
-          :itemId="item.id"
-      />
-    </template>
-  </div>
+  <ItemPoop v-for="item in items" :key="item.id" :speed="item.speed" :bottom="item.bottom" @done="removeItem(item.id)" />
 </template>

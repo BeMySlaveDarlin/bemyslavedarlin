@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Component\Common\Policy;
 
-use App\Component\Common\Entity\AboutEntity;
 use App\Component\Common\Entity\PlayerEntity;
 use App\Component\Common\ValueObject\SetPlayerRequest;
 use App\Service\Doctrine\Type\JsonBValue;
@@ -21,11 +20,26 @@ readonly class PlayersPolicy
     }
 
     /**
-     * @return AboutEntity[]
+     * @return array<array<string, mixed>>
      */
-    public function getList(): array
+    public function getList(?string $currentToken = null): array
     {
-        return $this->entityManager->getRepository(PlayerEntity::class)->findTopTen();
+        $players = $this->entityManager->getRepository(PlayerEntity::class)->findTopTen();
+        $result = [];
+        foreach ($players as $player) {
+            $data = $player->jsonSerialize();
+            if ($currentToken !== null && $player->token === $currentToken) {
+                $data['is_current'] = true;
+            }
+            $result[] = $data;
+        }
+
+        return $result;
+    }
+
+    public function getByToken(string $token): ?PlayerEntity
+    {
+        return $this->entityManager->getRepository(PlayerEntity::class)->findOneBy(['token' => $token]);
     }
 
     public function save(SetPlayerRequest $request): PlayerEntity
@@ -37,7 +51,11 @@ readonly class PlayersPolicy
                 $player->token = $request->fingerprint;
             }
 
-            $player->nickname = $request->nick;
+            $nickname = $request->nick !== null ? trim(strip_tags($request->nick)) : null;
+            if ($nickname !== null && mb_strlen($nickname) < 3) {
+                $nickname = null;
+            }
+            $player->nickname = $nickname;
             $player->grade = $request->grade;
             $player->money = (string)$request->money;
             $player->skills = new JsonBValue($request->skills ?? []);

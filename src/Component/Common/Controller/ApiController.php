@@ -13,6 +13,7 @@ use App\Component\Common\ValueObject\SetPlayerRequest;
 use App\Service\Component\Controller\AbstractApiController;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Throwable;
 
@@ -69,12 +70,50 @@ class ApiController extends AbstractApiController
         }
     }
 
-    public function getRatingAction(PlayersPolicy $policy): JsonResponse
+    public function getRatingAction(Request $request, PlayersPolicy $policy): JsonResponse
     {
         try {
+            $token = $request->headers->get('X-Fingerprint');
+
             return new JsonResponse([
                 'errorCode' => 0,
-                'data' => $policy->getList(),
+                'data' => $policy->getList($token),
+            ]);
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage());
+
+            return new ErrorJsonResponse(
+                error: $throwable->getMessage(),
+                throwable: $throwable
+            );
+        }
+    }
+
+    public function getPlayerAction(Request $request, PlayersPolicy $policy): JsonResponse
+    {
+        try {
+            $token = $request->headers->get('X-Fingerprint');
+            if ($token === null) {
+                return new JsonResponse([
+                    'errorCode' => 0,
+                    'data' => null,
+                ]);
+            }
+
+            $player = $policy->getByToken($token);
+            if ($player === null) {
+                return new JsonResponse([
+                    'errorCode' => 0,
+                    'data' => null,
+                ]);
+            }
+
+            $data = $player->jsonSerialize();
+            $data['is_current'] = true;
+
+            return new JsonResponse([
+                'errorCode' => 0,
+                'data' => $data,
             ]);
         } catch (Throwable $throwable) {
             $this->logger->error($throwable->getMessage());

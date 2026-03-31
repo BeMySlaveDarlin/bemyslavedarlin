@@ -4,20 +4,20 @@ upstream php-upstream {
 
 server {
     listen 80;
-    listen 443 ssl;
     server_name ${NGINX_BACKEND_DOMAIN};
     root /var/www/app/public;
 
-    ssl_certificate /var/www/app/var/ssl/server.crt;
-    ssl_certificate_key /var/www/app/var/ssl/server.key;
-
-    add_header Access-Control-Allow-Origin *;
     add_header X-Request-ID $request_id;
 
     location ~ ^/system/ping.json {
-        add_header      Access-Control-Allow-Origin *;
         return 200 '{"data":{"pong":true,"version":"1"},"ttl":0,"state":200}';
         expires epoch;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|mp3)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        access_log off;
     }
 
     location / {
@@ -44,7 +44,6 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_index index.php;
         include fastcgi_params;
-        # fastcgi_pass 127.0.0.1:9000;
         fastcgi_pass php-upstream;
     }
 
