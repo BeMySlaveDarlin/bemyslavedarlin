@@ -26,7 +26,7 @@
 
   <div class="dateline">
     <span>Works with any stack &bull; any language</span>
-    <span>Edition of March 2026</span>
+    <span>Edition of April 2026</span>
     <span>Claude Code &bull; cc-bootstrapper</span>
   </div>
 
@@ -109,7 +109,7 @@
       </div>
       <div class="indent2">
         <span class="connector">&#9500;&#9472;</span>
-        <span class="dir c-gold">state/</span>
+        <span class="dir c-gold">memory/</span>
         <span class="annotation">facts, patterns, decisions, sessions</span>
       </div>
       <div class="indent2">
@@ -145,12 +145,14 @@
         <p class="section-desc">Subagent personas with isolated context. Each is a .md prompt in agents/.</p>
 
         <ul class="tree" style="margin-top: 8px;">
-          <li><span class="fname">architect.md</span> <span class="fdesc">plans modules &amp; structure</span></li>
-          <li><span class="fname">developer.md</span> <span class="fdesc">writes production code</span></li>
-          <li><span class="fname">reviewer.md</span> <span class="fdesc">reviews logic &amp; security</span></li>
-          <li><span class="fname">test-writer.md</span> <span class="fdesc">generates unit tests</span></li>
-          <li><span class="fname">devops.md</span> <span class="fdesc">infra &amp; CI/CD</span></li>
-          <li><span class="fname c-ink-faint">...</span> <span class="fdesc">any role your project needs</span></li>
+          <li><span class="fname">analyst.md</span> <span class="fdesc">reads code &amp; schema, creates specs</span></li>
+          <li><span class="fname">{lang}-architect.md</span> <span class="fdesc">plans modules &amp; structure</span></li>
+          <li><span class="fname">{lang}-developer.md</span> <span class="fdesc">writes production code</span></li>
+          <li><span class="fname">{lang}-test-developer.md</span> <span class="fdesc">generates unit tests</span></li>
+          <li><span class="fname">{lang}-reviewer.md</span> <span class="fdesc">reviews architecture, logic &amp; security</span></li>
+          <li><span class="fname">storage-architect.md</span> <span class="fdesc">DB, cache, queues design</span></li>
+          <li><span class="fname">devops.md</span> <span class="fdesc">infra, CI/CD, Docker</span></li>
+          <li><span class="fname">qa-engineer.md</span> <span class="fdesc">test plans, Postman, E2E</span></li>
         </ul>
 
         <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
@@ -170,11 +172,13 @@
 
         <ul class="tree" style="margin-top: 8px;">
           <li><span class="fname">pipeline/</span> <span class="fdesc">task classifier &amp; router</span></li>
+          <li><span class="fname">p/</span> <span class="fdesc">alias for /pipeline</span></li>
           <li><span class="fname">code-style/</span> <span class="fdesc">enforces conventions</span></li>
-          <li><span class="fname">testing/</span> <span class="fdesc">test generation workflow</span></li>
-          <li><span class="fname">release/</span> <span class="fdesc">release checklist &amp; flow</span></li>
-          <li><span class="fname">review/</span> <span class="fdesc">multi-pass code review</span></li>
-          <li><span class="fname c-ink-faint">...</span> <span class="fdesc">any workflow your project needs</span></li>
+          <li><span class="fname">architecture/</span> <span class="fdesc">module structure &amp; patterns</span></li>
+          <li><span class="fname">testing/</span> <span class="fdesc">test patterns &amp; frameworks</span></li>
+          <li><span class="fname">storage/</span> <span class="fdesc">DB, cache, queue patterns</span></li>
+          <li><span class="fname">memory/</span> <span class="fdesc">3-level memory system</span></li>
+          <li><span class="fname c-ink-faint">gitlab/ github/ playwright/</span> <span class="fdesc">conditional MCP skills</span></li>
         </ul>
 
         <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
@@ -199,25 +203,21 @@
         <ul class="tree">
           <li class="pipeline-link" data-pipeline="new-code"><span class="fname c-red">new-code.md</span> <span class="fdesc">write new feature</span></li>
           <li class="pipeline-link" data-pipeline="fix-code"><span class="fname c-red">fix-code.md</span> <span class="fdesc">diagnose &amp; fix bugs</span></li>
-          <li class="pipeline-link" data-pipeline="review"><span class="fname c-red">review.md</span> <span class="fdesc">multi-pass review</span></li>
-          <li class="pipeline-link" data-pipeline="api-docs"><span class="fname c-red">api-docs.md</span> <span class="fdesc">API documentation</span></li>
-          <li class="pipeline-link" data-pipeline="qa-docs"><span class="fname c-red">qa-docs.md</span> <span class="fdesc">QA checklists</span></li>
+          <li class="pipeline-link" data-pipeline="review"><span class="fname c-red">review.md</span> <span class="fdesc">per-lang parallel review</span></li>
         </ul>
       </div>
       <div class="col">
         <ul class="tree">
           <li class="pipeline-link" data-pipeline="tests"><span class="fname c-red">tests.md</span> <span class="fdesc">generate tests</span></li>
-          <li class="pipeline-link" data-pipeline="release"><span class="fname c-red">release.md</span> <span class="fdesc">release workflow</span></li>
           <li class="pipeline-link" data-pipeline="hotfix"><span class="fname c-red">hotfix.md</span> <span class="fdesc">urgent hotfix</span></li>
-          <li class="pipeline-link" data-pipeline="api-contract"><span class="fname c-red">api-contract.md</span> <span class="fdesc">OpenAPI spec</span></li>
+          <li class="pipeline-link" data-pipeline="brainstorm"><span class="fname c-red">brainstorm.md</span> <span class="fdesc">multi-agent brainstorm</span></li>
         </ul>
       </div>
       <div class="col">
         <ul class="tree">
           <li class="pipeline-link" data-pipeline="full-feature"><span class="fname c-red">full-feature.md</span> <span class="fdesc">end-to-end cycle</span></li>
-          <li class="pipeline-link" data-pipeline="gitlab"><span class="fname c-red">gitlab.md</span> <span class="fdesc">GitLab operations</span></li>
-          <li class="pipeline-link" data-pipeline="create-issue"><span class="fname c-red">create-issue.md</span> <span class="fdesc">issue from template</span></li>
-          <li class="pipeline-link" data-pipeline="decompose"><span class="fname c-red">decompose.md</span> <span class="fdesc">EPIC decomposition</span></li>
+          <li class="pipeline-link" data-pipeline="api-docs"><span class="fname c-red">api-docs.md</span> <span class="fdesc">API documentation</span></li>
+          <li class="pipeline-link" data-pipeline="qa-docs"><span class="fname c-red">qa-docs.md</span> <span class="fdesc">QA checklists</span></li>
         </ul>
 
         <div style="margin-top: 10px; padding: 8px 10px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 11px; color: var(--ink-light);">
@@ -316,15 +316,17 @@
       <div class="section">
         <div class="section-head">
           <div class="section-icon icon-section">&#8251;</div>
-          <h2>State &amp; Context</h2>
+          <h2>Memory &amp; Context</h2>
         </div>
         <p class="section-desc">Persistent knowledge that survives across sessions.</p>
 
         <ul class="tree" style="margin-top: 8px;">
-          <li><span class="fname c-gold">state/</span> <span class="fdesc">persistent knowledge across sessions</span></li>
-          <li><span class="fname c-gold">state/facts.md</span> <span class="fdesc">project facts &amp; patterns</span></li>
-          <li><span class="fname c-gold">state/decisions/</span> <span class="fdesc">architecture decision records</span></li>
-          <li><span class="fname c-gold">state/sessions/</span> <span class="fdesc">session summaries</span></li>
+          <li><span class="fname c-gold">memory/</span> <span class="fdesc">persistent knowledge across sessions</span></li>
+          <li><span class="fname c-gold">memory/facts.md</span> <span class="fdesc">stack, key paths, active decisions, known issues</span></li>
+          <li><span class="fname c-gold">memory/patterns.md</span> <span class="fdesc">code patterns &amp; conventions</span></li>
+          <li><span class="fname c-gold">memory/issues.md</span> <span class="fdesc">recurring issues tracker</span></li>
+          <li><span class="fname c-gold">memory/decisions/</span> <span class="fdesc">architecture decision records</span></li>
+          <li><span class="fname c-gold">memory/sessions/</span> <span class="fdesc">session summaries</span></li>
         </ul>
 
         <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule-light);">
@@ -336,7 +338,7 @@
         </div>
 
         <div style="margin-top: 14px; padding: 10px 12px; background: #fdfbf7; border: 1px solid var(--rule-light); border-radius: 4px; font-size: 12px; color: var(--ink-light);">
-          <strong style="color: var(--ink);">Pattern:</strong> state/ survives between sessions. Hooks write here on SessionStart and Stop, so context is never lost.
+          <strong style="color: var(--ink);">Pattern:</strong> memory/ survives between sessions. Hooks and pipelines update it via CAPTURE phases with REPLACE/MERGE semantics.
         </div>
       </div>
     </div>
@@ -370,7 +372,7 @@
         <span>GitHub</span>
       </a>
     </p>
-    <p>CC-Bootstrapper &bull; Claude Code Project Harness &bull; March 2026</p>
+    <p>CC-Bootstrapper v8.0.0 &bull; Claude Code Project Harness &bull; April 2026</p>
   </footer>
 
 </div>
@@ -398,30 +400,26 @@ const pipelines = {
     badgeText: 'Code Generation',
     body: `
       <h3><span class="phase-num">Phase 0</span>Capability Detection</h3>
-      <p>Detects whether to run in TEAM mode (parallel agents) or SEQUENTIAL mode (one-by-one). Adapts to available resources.</p>
+      <p>Detects whether to run in TEAM mode (parallel agents via TeamCreate) or SEQUENTIAL mode (Task() one-by-one). Automatic fallback.</p>
 
-      <h3><span class="phase-num">Phase 1</span>Architecture</h3>
-      <p>Plans the module structure, interfaces, and dependencies. The architect agent designs the blueprint before any code is written.</p>
-      <ul>
-        <li>Module directory structure</li>
-        <li>Interface contracts (Services/Contract/, Repository/Contract/)</li>
-        <li>Dependency mapping</li>
-      </ul>
+      <h3><span class="phase-num">Phase 1</span>Analysis</h3>
+      <p>Analyst agent reads code, schema, infra &mdash; creates a spec with scope, acceptance criteria, and constraints. User approves or refines.</p>
 
-      <h3><span class="phase-num">Phase 2</span>Database</h3>
-      <p>Designs migrations, indexes, and query patterns. Raw SQL via DB::statement().</p>
+      <h3><span class="phase-num">Phase 2</span>Architecture</h3>
+      <p>Architect agent designs module structure, interfaces, dependencies. Plan written to .claude/output/plans/. User approves.</p>
 
-      <h3><span class="phase-num">Phase 3</span>Implementation</h3>
-      <p>The developer agent writes production code following the architecture blueprint. Controller &rarr; Service &rarr; Repository chain.</p>
+      <h3><span class="phase-num">Phase 3</span>Storage</h3>
+      <p>If task touches DB &mdash; storage-architect designs migrations and schema changes. Skipped if no DB involved.</p>
 
-      <h3><span class="phase-num">Phase 4</span>Tests</h3>
-      <p>Generates unit tests with proper mocking. Verifies all tests pass before proceeding.</p>
+      <h3><span class="phase-num">Phase 4+5+6</span>Code &rarr; Tests &rarr; Review</h3>
+      <p><strong>TEAM mode:</strong> TeamCreate per language &mdash; developer, test-developer, reviewer work as a team. Reviewer can send BLOCK back to developer for fixes (max 2 cycles).</p>
+      <p><strong>SEQUENTIAL mode:</strong> Task() calls one by one. Same flow, no parallelism.</p>
 
-      <h3><span class="phase-num">Phase 5</span>Review</h3>
-      <p>Logic and security reviewers run in parallel, producing a severity-sorted report.</p>
+      <h3><span class="phase-num">Phase 6.5</span>Capture</h3>
+      <p>Updates memory/facts.md (Stack, Key Paths, Decisions, Issues). Records architectural decisions.</p>
 
-      <h3><span class="phase-num">Phase 6</span>Finalization</h3>
-      <p>State capture, pattern updates, task log entry. Ready for commit.</p>
+      <h3><span class="phase-num">Phase 7</span>Finalization</h3>
+      <p>Summary report with file count, test results, review verdict.</p>
     `
   },
   'fix-code': {
@@ -448,30 +446,26 @@ const pipelines = {
       <p>Logic reviewer verifies the fix is correct and complete. No side effects introduced.</p>
 
       <h3><span class="phase-num">Phase 5</span>Capture</h3>
-      <p>Records the pattern in state/memory for future reference. Updates known issues if applicable.</p>
+      <p>Records the pattern in memory/ for future reference. Updates known issues.</p>
     `
   },
   'review': {
     title: 'Code Review',
-    sub: 'Multi-pass parallel review with severity sorting',
+    sub: 'Per-language parallel review with severity sorting',
     badge: 'review',
     badgeText: 'Review',
     body: `
       <h3><span class="phase-num">Phase 0</span>Capability Detection</h3>
-      <p>TEAM mode runs logic + security reviewers in parallel. SEQUENTIAL mode runs them one after another.</p>
+      <p>TEAM mode spawns per-lang reviewers in parallel via TeamCreate. SEQUENTIAL mode runs Task() one by one.</p>
 
-      <h3><span class="phase-num">Phase 1</span>Parallel Review</h3>
-      <p>Two independent reviewers analyze the code simultaneously:</p>
-      <ul>
-        <li><strong>Logic reviewer</strong> &mdash; correctness, edge cases, business rules</li>
-        <li><strong>Security reviewer</strong> &mdash; injection, auth, data exposure, OWASP top 10</li>
-      </ul>
+      <h3><span class="phase-num">Phase 1</span>Review</h3>
+      <p>One unified reviewer per language covers architecture, logic, security, static analysis, and performance. Multi-lang projects run reviewers in parallel.</p>
 
       <h3><span class="phase-num">Phase 2</span>Report</h3>
-      <p>Findings are merged and sorted by severity: critical &rarr; high &rarr; medium &rarr; low. Each issue includes location, description, and suggested fix.</p>
+      <p>Findings merged into a summary table sorted by severity. Verdict: BLOCK / PASS WITH WARNINGS / PASS.</p>
 
       <h3><span class="phase-num">Phase 3</span>Capture</h3>
-      <p>Recurring patterns are saved to state/memory/patterns.md to improve future reviews.</p>
+      <p>Recurring patterns saved to memory/patterns.md. Issues tracked in memory/issues.md.</p>
     `
   },
   'tests': {
@@ -499,76 +493,65 @@ const pipelines = {
       <p>Checks test quality: meaningful assertions, no false positives, proper isolation.</p>
     `
   },
-  'release': {
-    title: 'Release',
-    sub: 'Production release following GitFlow With Tags',
-    badge: 'release',
-    badgeText: 'Release',
+  'brainstorm': {
+    title: 'Brainstorm',
+    sub: 'Multi-agent idea exploration and decision-making',
+    badge: 'review',
+    badgeText: 'Brainstorm',
     body: `
-      <h3><span class="phase-num">Phase 1</span>Prepare</h3>
-      <p>Verifies all tasks are complete, tests pass, and the branch is ready for release.</p>
+      <h3><span class="phase-num">Phase 0</span>Capability Detection</h3>
+      <p>TEAM mode spawns a discussion team. SEQUENTIAL mode collects perspectives one by one.</p>
 
-      <h3><span class="phase-num">Phase 2</span>Merge to Master</h3>
-      <p>Creates merge requests, verifies approvals, and merges to the main branch.</p>
+      <h3><span class="phase-num">Phase 1</span>Frame</h3>
+      <p>Analyst formulates the problem: constraints, criteria, scope. User approves or refines.</p>
 
-      <h3><span class="phase-num">Phase 3</span>RC Tag</h3>
-      <p>Creates a release candidate tag (e.g., v1.2-rc.1) for staging deployment and verification.</p>
+      <h3><span class="phase-num">Phase 2</span>Perspectives</h3>
+      <p><strong>TEAM mode:</strong> analyst, architect, storage-architect, devops analyze in parallel. Architect collects and synthesizes 2-3 options with trade-offs.</p>
+      <p><strong>SEQUENTIAL mode:</strong> each agent adds their perspective in turn.</p>
 
-      <h3><span class="phase-num">Phase 4</span>Stage Verification</h3>
-      <p>Runs through the QA checklist on staging environment. Manual verification checkpoint.</p>
-
-      <h3><span class="phase-num">Phase 5</span>Final Tag</h3>
-      <p>Creates the production tag (e.g., v1.2.0) triggering the production deploy pipeline.</p>
-
-      <h3><span class="phase-num">Phase 6</span>Post-Release</h3>
-      <p>Syncs master back to develop, updates state, closes related issues.</p>
+      <h3><span class="phase-num">Phase 3</span>Capture</h3>
+      <p>User picks a variant. Decision recorded in memory/decisions/ with rationale and rejected alternatives.</p>
     `
   },
   'hotfix': {
     title: 'Hotfix',
-    sub: 'Critical bug fix with GitFlow branching',
+    sub: 'Critical fix: chains fix-code + review pipelines',
     badge: 'release',
     badgeText: 'Urgent',
     body: `
-      <h3><span class="phase-num">Phase 0</span>Branch</h3>
-      <p>Creates a hotfix branch from the last final tag. Isolates the fix from ongoing development.</p>
-
       <h3><span class="phase-num">Phase 1</span>Fix</h3>
-      <p>Executes the fix-code pipeline within the hotfix branch context.</p>
+      <p>Executes the full fix-code pipeline (diagnosis &rarr; fix &rarr; tests &rarr; review).</p>
 
       <h3><span class="phase-num">Phase 2</span>Review</h3>
-      <p>Fast-track review focused on correctness and no regressions.</p>
+      <p>Executes review pipeline for all changed files. BLOCK &rarr; back to Phase 1.</p>
 
       <h3><span class="phase-num">Phase 3</span>Capture</h3>
-      <p>Records findings and root cause for post-mortem.</p>
+      <p>Updates memory: Key Paths, Known Issues, patterns.</p>
 
-      <h3><span class="phase-num">Phase 4</span>Release</h3>
-      <p>Merges to master, creates a patch tag (e.g., v1.2.1), triggers production deploy.</p>
-
-      <h3><span class="phase-num">Phase 5</span>Sync</h3>
-      <p>Merges the hotfix back into develop to keep branches in sync.</p>
+      <h3><span class="phase-num">Phase 4</span>Finalization</h3>
+      <p>Summary with root cause, files changed, regression test result, review verdict.</p>
     `
   },
   'full-feature': {
     title: 'Full Feature',
-    sub: 'End-to-end feature cycle: code + docs + QA',
+    sub: 'Orchestrator: chains new-code + api-docs + qa-docs',
     badge: 'code',
     badgeText: 'Full Cycle',
     body: `
-      <h3><span class="phase-num">Phase 0.5</span>Prerequisites</h3>
-      <p>Checks for SoW (Statement of Work) and API contract. Won&rsquo;t proceed without a clear specification.</p>
+      <h3><span class="phase-num">Phase 1</span>New Code</h3>
+      <p>Executes the full new-code pipeline (all 7 phases including CAPTURE).</p>
 
-      <h3><span class="phase-num">Phase 1</span>New Code Pipeline</h3>
-      <p>Executes the full new-code pipeline: architecture &rarr; database &rarr; code &rarr; tests &rarr; review.</p>
+      <h3><span class="phase-num">Phase 2</span>API Docs</h3>
+      <p>Executes api-docs pipeline. Skipped if no API endpoints.</p>
 
-      <h3><span class="phase-num">Phase 2</span>API Documentation</h3>
-      <p>Executes api-docs pipeline to generate endpoint documentation.</p>
+      <h3><span class="phase-num">Phase 3</span>QA Docs</h3>
+      <p>Executes qa-docs pipeline. Skipped if no API endpoints.</p>
 
-      <h3><span class="phase-num">Phase 3</span>QA Documentation</h3>
-      <p>Executes qa-docs pipeline to generate test checklists and Postman collections.</p>
+      <h3><span class="phase-num">Phase 4</span>Capture</h3>
+      <p>Full memory update: Stack, Key Paths, Decisions, Issues, patterns.</p>
 
-      <h3><span class="phase-num">Phase 4&ndash;5</span>Capture &amp; Finalize</h3>
-      <p>Captures all artifacts, updates state, produces a complete feature summary.</p>
+      <h3><span class="phase-num">Phase 5</span>Finalization</h3>
+      <p>Complete feature summary with code stats, docs status, review verdict.</p>
     `
   },
   'api-docs': {
@@ -585,66 +568,6 @@ const pipelines = {
 
       <h3><span class="phase-num">Phase 3</span>Save</h3>
       <p>Outputs to .claude/output/contracts/ for team reference.</p>
-    `
-  },
-  'api-contract': {
-    title: 'API Contract',
-    sub: 'Generate OpenAPI 3.0 / Swagger specification',
-    badge: 'docs',
-    badgeText: 'Contract',
-    body: `
-      <h3><span class="phase-num">Phase 1</span>Scan</h3>
-      <p>Reads module files: routes, controllers, request classes, DTOs. Maps validation rules to OpenAPI types.</p>
-
-      <h3><span class="phase-num">Phase 2</span>Generate</h3>
-      <p>Produces a complete OpenAPI 3.0 YAML specification with paths, schemas, and security definitions.</p>
-
-      <h3><span class="phase-num">Phase 3</span>Save</h3>
-      <p>Outputs to .claude/output/contracts/{module}.yml &mdash; ready for Swagger UI or code generation.</p>
-    `
-  },
-  'gitlab': {
-    title: 'GitLab Operations',
-    sub: 'Automate GitLab via MCP integration',
-    badge: 'ops',
-    badgeText: 'Operations',
-    body: `
-      <h3><span class="phase-num">Phase 1</span>Analyze</h3>
-      <p>Classifies the request type: merge requests, issues, pipelines, releases, or wiki operations.</p>
-
-      <h3><span class="phase-num">Phase 2</span>Execute</h3>
-      <p>Uses MCP tools to perform the operation directly in GitLab. No browser needed.</p>
-      <ul>
-        <li>Create/update merge requests</li>
-        <li>Manage issues and labels</li>
-        <li>Trigger and monitor pipelines</li>
-        <li>Create releases and tags</li>
-      </ul>
-
-      <h3><span class="phase-num">Phase 3</span>Verify</h3>
-      <p>Verifies critical operations completed successfully. Checks for conflicts, failures, or missing approvals.</p>
-
-      <h3><span class="phase-num">Phase 4</span>Report</h3>
-      <p>Produces a summary with links and updates the task log.</p>
-    `
-  },
-  'create-issue': {
-    title: 'Create Issue',
-    sub: 'Generate GitLab issues from templates',
-    badge: 'ops',
-    badgeText: 'Issue Management',
-    body: `
-      <h3><span class="phase-num">Phase 1</span>Classify</h3>
-      <p>Determines the issue type: task, bug report, research, SoW, or release checklist.</p>
-
-      <h3><span class="phase-num">Phase 2</span>Generate</h3>
-      <p>Fills the appropriate template with provided details. Each template has a standard structure for consistency.</p>
-
-      <h3><span class="phase-num">Phase 3</span>Create</h3>
-      <p>Creates the issue in GitLab via MCP, assigns labels, milestone, and assignee.</p>
-
-      <h3><span class="phase-num">Phase 4</span>Report</h3>
-      <p>Returns the issue IID and URL for immediate reference.</p>
     `
   },
   'qa-docs': {
@@ -664,28 +587,6 @@ const pipelines = {
 
       <h3><span class="phase-num">Phase 4</span>Save</h3>
       <p>Outputs checklist and collection to .claude/output/ for team use.</p>
-    `
-  },
-  'decompose': {
-    title: 'Decompose',
-    sub: 'Break down an EPIC into atomic tasks',
-    badge: 'ops',
-    badgeText: 'Planning',
-    body: `
-      <h3><span class="phase-num">Phase 1</span>Read</h3>
-      <p>Ingests the EPIC description, SoW, and API contracts. Understands the full scope.</p>
-
-      <h3><span class="phase-num">Phase 2</span>Analyze</h3>
-      <p>Splits scope by concern: frontend vs. backend, module boundaries, dependency order.</p>
-
-      <h3><span class="phase-num">Phase 3</span>Generate Tasks</h3>
-      <p>Creates atomic task descriptions. Each task is independently implementable and testable.</p>
-
-      <h3><span class="phase-num">Phase 4</span>Create Issues</h3>
-      <p>Creates linked GitLab issues for each task, with proper labels and ordering.</p>
-
-      <h3><span class="phase-num">Phase 5</span>Report</h3>
-      <p>Produces a task table with dependencies, estimates, and assignment suggestions.</p>
     `
   }
 };
@@ -737,27 +638,22 @@ const termLines = [
   { type: 'blank' },
   { type: 'output', text: '  [PIPELINE: REVIEW] Review OrderController.php' },
   { type: 'blank' },
+  { type: 'blank' },
+  { type: 'output', text: '  Phase 0: CAPABILITY DETECT → [MODE: TEAM]' },
+  { type: 'output', text: '  Phase 1: Review — spawning per-lang reviewers.' },
+  { type: 'blank' },
   { type: 'dim', text: '  Read 2 files (ctrl+o to expand)' },
   { type: 'blank' },
-  { type: 'skill', text: '● ', val: '[MODE: SEQUENTIAL]' },
-  { type: 'output', text: '  Phase 1: Parallel Review — launching logic and security reviewers.' },
-  { type: 'blank' },
-  { type: 'dim', text: '  Read 1 file (ctrl+o to expand)' },
-  { type: 'blank' },
-  { type: 'output', text: '  Running 2 agents... (ctrl+o to expand)' },
-  { type: 'dim', text: '  ├─ Logic review OrderController · 3 tool uses · 15.4k tokens' },
+  { type: 'output', text: '  TeamCreate("review-order-controller")' },
+  { type: 'dim', text: '  ├─ php-reviewer · 3 tool uses · 15.4k tokens' },
   { type: 'dim', text: '  │  └ Reading 3 files...' },
-  { type: 'dim', text: '  ├─ Security review OrderController · 0 tool uses' },
-  { type: 'dim', text: '  │  └ Initializing...' },
   { type: 'dim', text: '  (ctrl+b to run in background)' },
   { type: 'blank' },
   { type: 'dim', text: '  · Smooshing... (41s · ↓ 655 tokens)' },
   { type: 'blank' },
-  { type: 'skill', text: '● ', val: '2 agents finished (ctrl+o to expand)' },
-  { type: 'dim', text: '  ├─ Logic review OrderController · 5 tool uses · 20.6k tokens' },
-  { type: 'dim', text: '  │  └ Done' },
-  { type: 'dim', text: '  ├─ Security review OrderController · 11 tool uses · 19.9k tokens' },
-  { type: 'dim', text: '  │  └ Done' },
+  { type: 'skill', text: '● ', val: '1 agent finished (ctrl+o to expand)' },
+  { type: 'dim', text: '  ├─ php-reviewer · 11 tool uses · 20.6k tokens' },
+  { type: 'dim', text: '  │  └ Done — verdict: BLOCK' },
   { type: 'blank' },
   { type: 'dim', text: '  ✱ Smooshing... (1m 45s · ↓ 3.1k tokens)' },
   { type: 'blank' },
@@ -766,8 +662,8 @@ const termLines = [
   { type: 'agent', text: '  Verdict: BLOCK', val: ' — 2 blockers (missing final, method injection).' },
   { type: 'blank' },
   { type: 'output', text: '  [REVIEW COMPLETE]' },
-  { type: 'output', text: '  Logic: BLOCK (11 findings: 2 BLOCK, 7 WARN, 2 INFO)' },
-  { type: 'output', text: '  Security: PASS WITH WARNINGS (7 findings: 0 BLOCK, 4 WARN, 3 INFO)' },
+  { type: 'output', text: '  Mode: TEAM' },
+  { type: 'output', text: '  php-reviewer: BLOCK (11 findings: 2 BLOCK, 7 WARN, 2 INFO)' },
   { type: 'red', text: '  Overall: ', val: 'BLOCK' },
   { type: 'blank' },
   { type: 'dim', text: '  ✱ Worked for 1m 54s' },

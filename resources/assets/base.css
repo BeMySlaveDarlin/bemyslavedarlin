@@ -373,6 +373,27 @@ footer {
   font-family: 'Playfair Display', Georgia, serif;
 }
 .footer-bar a:hover { color: var(--paper); }
+.footer-projects {
+  position: absolute; right: 10px; bottom: 30px;
+  display: flex; gap: 8px; align-items: center;
+  pointer-events: auto;
+}
+.project-link {
+  color: var(--ink-faint); text-decoration: none; font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase;
+  font-family: 'Playfair Display', Georgia, serif;
+  display: flex; align-items: center; gap: 3px;
+  padding: 2px 6px;
+  border: 1px solid var(--rule-light);
+  background: rgba(245,240,232,0.7);
+  transition: all 0.2s;
+}
+.project-link:hover {
+  color: var(--ink); border-color: var(--ink);
+  background: var(--paper);
+}
+.project-link svg { opacity: 0.6; }
+.project-link:hover svg { opacity: 1; }
 .footer-powered {
   font-size: 12px; color: var(--ink-faint);
   letter-spacing: 1px; text-transform: uppercase;
@@ -460,7 +481,7 @@ footer {
   .quote-bar { padding: 5px 55px; font-size: 15px; min-height: 32px; }
 
   /* Nav */
-  .nav-left, .nav-right { top: 62px; }
+  .nav-left, .nav-right { top: 100px; }
   .nav-left { left: 4px; } .nav-right { right: 4px; }
   .nav-btn { width: 54px; height: 54px; padding: 10px; }
 
@@ -471,52 +492,52 @@ footer {
   .footer-powered { font-size: 9px; }
 
   /* Ground layers */
-  .ground-4 { bottom: 0; height: 35vh; }
-  .ground-3 { bottom: 0; height: 33.5vh; }
-  .ground-2 { bottom: 0; height: 31vh; }
-  .ground-1 { bottom: 0; height: 27vh; }
+  .ground-4 { bottom: 0; height: 40vh; }
+  .ground-3 { bottom: 0; height: 38vh; }
+  .ground-2 { bottom: 0; height: 35vh; }
+  .ground-1 { bottom: 0; height: 30vh; }
 
-  .haze-3 { bottom: 0; height: 35vh; }
-  .haze-2 { bottom: 0; height: 33.5vh; }
-  .haze-1 { bottom: 0; height: 31vh; }
+  .haze-3 { bottom: 0; height: 40vh; }
+  .haze-2 { bottom: 0; height: 38vh; }
+  .haze-1 { bottom: 0; height: 35vh; }
 
   /* Group 4 (farthest) */
-  .tree-far { bottom: calc(35vh - 10px); }
-  .tree-far img { height: 50px; }
+  .tree-far { bottom: calc(40vh - 10px); }
+  .tree-far img { height: 55px; }
 
   /* Group 3 */
-  .tree-back { bottom: calc(33.5vh - 12px); }
-  .tree-back img { height: 75px; }
-  .bush-back { bottom: calc(33.5vh - 20px); }
-  .bush-back img { height: 20px; }
+  .tree-back { bottom: calc(38vh - 12px); }
+  .tree-back img { height: 85px; }
+  .bush-back { bottom: calc(38vh - 20px); }
+  .bush-back img { height: 22px; }
 
   /* Group 2 */
-  .tree-mid { bottom: calc(31vh - 15px); }
-  .tree-mid img { height: 100px; }
-  .bush-mid { bottom: calc(31vh - 25px); }
-  .bush-mid img { height: 25px; }
+  .tree-mid { bottom: calc(35vh - 15px); }
+  .tree-mid img { height: 115px; }
+  .bush-mid { bottom: calc(35vh - 25px); }
+  .bush-mid img { height: 28px; }
 
   /* Group 1 (front) */
-  .character { width: 70px; height: 100px; bottom: calc(27vh - 8px); }
-  .char-badge { font-size: 8px; padding: 1px 4px; }
-  .badge-grade { top: -22px; left: -8px; }
+  .character { width: 80px; height: 115px; bottom: calc(30vh - 8px); }
+  .char-badge { font-size: 9px; padding: 1px 5px; }
+  .badge-grade { top: -24px; left: -8px; }
   .badge-money { top: -8px; left: -8px; }
-  .char-badge img { width: 10px; height: 10px; }
-  .tree-front { bottom: calc(27vh - 18px); }
-  .tree-front img { height: 130px; }
-  .bush-front { bottom: calc(27vh - 31px); }
-  .bush-front img { height: 35px; }
+  .char-badge img { width: 11px; height: 11px; }
+  .tree-front { bottom: calc(30vh - 18px); }
+  .tree-front img { height: 150px; }
+  .bush-front { bottom: calc(30vh - 31px); }
+  .bush-front img { height: 40px; }
 
   /* Clouds */
-  .cloud-far img { width: 40px; }
-  .cloud-mid img { width: 55px; }
-  .cloud-near img { width: 70px; }
+  .cloud-far img { width: 45px; }
+  .cloud-mid img { width: 60px; }
+  .cloud-near img { width: 80px; }
 
   /* Items */
-  .coin-item { width: 30px; height: 30px; }
-  .poop-item { width: 30px; height: 30px; }
-  .skill-item { width: 35px; height: 35px; }
-  .skill-bubble img.skill-icon { width: 16px; height: 16px; }
+  .coin-item { width: 35px; height: 35px; }
+  .poop-item { width: 35px; height: 35px; }
+  .skill-item { width: 42px; height: 42px; }
+  .skill-bubble img.skill-icon { width: 20px; height: 20px; }
 
   /* Popups */
   .popup-overlay { padding: 20px 8px; }

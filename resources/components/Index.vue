@@ -18,6 +18,7 @@ const gameRef = ref(null)
 function handleAction(e) {
   if (e.target.closest('.nav-left') || e.target.closest('.nav-right')) return
   if (e.target.closest('.popup-overlay')) return
+  if (e.type === 'touchend') e.preventDefault()
   if (store.conditions.isPopupActive) return
   if (store.conditions.isJumpActive) return
   store.toggleJump()
@@ -68,7 +69,7 @@ onMounted(() => {
     class="game"
     tabindex="0"
     @click="handleAction"
-    @touchend.prevent="handleAction"
+    @touchend="handleAction"
     @keydown="handleKeydown"
   >
     <header>
